@@ -28,13 +28,13 @@ namespace GestionDeConsorcios_v2_MVC.Controllers
             {
                 if (user.Rol == RolUsuario.Administrador)
                 {
-                    // Redirigir a la vista de administrador (TO BE)
-                    return RedirectToAction("Administrador", "TOBE");
+                    // Redirigir a la vista de administrador
+                    return RedirectToAction("AdminHome", "Home");
                 }
                 else if (user.Rol == RolUsuario.Propietario)
                 {
-                    // Redirigir a la vista de propietario (TO BE)
-                    return RedirectToAction("Propietario", "TOBE");
+                    // Redirigir a la vista de propietario
+                    return RedirectToAction("PropietarioHome", "Home");
                 }
             }
             ModelState.AddModelError(string.Empty, "Usuario o contraseña incorrectos");

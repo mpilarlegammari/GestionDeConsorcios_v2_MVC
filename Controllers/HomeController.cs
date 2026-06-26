@@ -16,6 +16,18 @@ namespace GestionDeConsorcios_v2_MVC.Controllers
             return View();
         }
 
+        public IActionResult AdminHome()
+        {
+            // Redirige a la vista de administrador
+            return View();
+        }
+
+        public IActionResult PropietarioHome()
+        {
+            // Redirige a la vista de propietario
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
