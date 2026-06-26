@@ -20,7 +20,7 @@
 
         <aside class="app-sidebar" data-sidebar>
             <div class="sidebar-brand">
-                <a class="brand-link" asp-controller="Home" asp-action="AdminHome">
+                <a class="brand-link" asp-controller="Home" asp-action="PropietarioHome">
                     <span class="brand-mark">GC</span>
                     <span>
                         <strong>Gestion</strong>
@@ -30,7 +30,7 @@
             </div>
 
             <div class="sidebar-section">
-                <span class="sidebar-label">Menu administrador</span>
+                <span class="sidebar-label">Menu propietario</span>
 
                 <nav class="sidebar-nav">
                     <a class="sidebar-link @(currentPath.StartsWith("/Home/AdminHome") ? "active" : "")"
@@ -103,13 +103,13 @@
 
                 <div class="header-title">
                     <span>Sistema de Gestion de Consorcios</span>
-                    <h1>@(ViewData["Title"] ?? "Administrador")</h1>
+                    <h1>@(ViewData["Title"] ?? "Propietario")</h1>
                 </div>
 
                 <div class="header-actions">
                     <div class="role-switcher">
                         <span>Rol</span>
-                        <strong>Administrador</strong>
+                        <strong>Propietario</strong>
                     </div>
                 </div>
             </header>
