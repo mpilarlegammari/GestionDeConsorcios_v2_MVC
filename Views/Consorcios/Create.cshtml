@@ -12,7 +12,7 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="All" class="text-danger"></div>
 
             <div class="form-group">
                 <label asp-for="Nombre" class="control-label"></label>
@@ -56,48 +56,111 @@
                 <span asp-validation-for="Observaciones" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Estado" class="control-label"></label>
-                <input asp-for="Estado" class="form-control" />
-                <span asp-validation-for="Estado" class="text-danger"></span>
+            <p>Unidades Funcionales:</p>
+
+            <div id="unidades-container">
+                <div class="form-group">
+                    <label asp-for="UnidadesFuncionales[0].NumeroUF" class="control-label"></label>
+                    <input name="UnidadesFuncionales[0].NumeroUF" class="form-control" />
+                    <span asp-validation-for="UnidadesFuncionales[0].NumeroUF" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="UnidadesFuncionales[0].Piso" class="control-label"></label>
+                    <input name="UnidadesFuncionales[0].Piso" class="form-control" />
+                    <span asp-validation-for="UnidadesFuncionales[0].Piso" class="text-danger"></span>
+                </div>
+
+                
+                <div class="form-group">
+                    <label asp-for="UnidadesFuncionales[0].Departamento" class="control-label"></label>
+                    <input name="UnidadesFuncionales[0].Departamento" class="form-control" />
+                    <span asp-validation-for="UnidadesFuncionales[0].Departamento" class="text-danger"></span>
+                </div>
+
+                
+
+                <div class="form-group">
+                    <label asp-for="UnidadesFuncionales[0].NombrePropietario" class="control-label"></label>
+                    <input name="UnidadesFuncionales[0].NombrePropietario" class="form-control" />
+                    <span asp-validation-for="UnidadesFuncionales[0].NombrePropietario" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="UnidadesFuncionales[0].MailPropietario" class="control-label"></label>
+                    <input name="UnidadesFuncionales[0].MailPropietario" class="form-control" />
+                    <span asp-validation-for="UnidadesFuncionales[0].MailPropietario" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="UnidadesFuncionales[0].DniPropietario" class="control-label"></label>
+                    <input name="UnidadesFuncionales[0].DniPropietario" class="form-control" />
+                    <span asp-validation-for="UnidadesFuncionales[0].DniPropietario" class="text-danger"></span>
+                </div>
+
+                
+                <div class="form-group">
+                    <label asp-for="UnidadesFuncionales[0].Telefono" class="control-label"></label>
+                    <input name="UnidadesFuncionales[0].Telefono" class="form-control" />
+                    <span asp-validation-for="UnidadesFuncionales[0].Telefono" class="text-danger"></span>
+                </div>
+
+
             </div>
 
-            <div class="form-group">
-                <label asp-for="FechaCreacion" class="control-label"></label>
-                <input asp-for="FechaCreacion" class="form-control" />
-                <span asp-validation-for="FechaCreacion" class="text-danger"></span>
+                        <button type="button" id="agregar-unidad">
+                            Agregar unidad
+                        </button>
+
+                        <div class="form-group">
+                            <input type="submit" value="Create" class="btn btn-primary" />
+                        </div>
+                    </form>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label asp-for="UnidadesFuncionales" class="control-label"></label>
-                <input asp-for="UnidadesFuncionales" class="form-control" />
-                <span asp-validation-for="UnidadesFuncionales" class="text-danger"></span>
+            <div>
+                <a asp-action="Index">Back to List</a>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Gastos" class="control-label"></label>
-                <input asp-for="Gastos" class="form-control" />
-                <span asp-validation-for="Gastos" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Comunicados" class="control-label"></label>
-                <input asp-for="Comunicados" class="form-control" />
-                <span asp-validation-for="Comunicados" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Amenities" class="control-label"></label>
-                <input asp-for="Amenities" class="form-control" />
-                <span asp-validation-for="Amenities" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+            @section Scripts {
+            <script>
+                let unidadIndex = 1;
+                document.getElementById('agregar-unidad').addEventListener('click', function () {
+                    const container = document.getElementById('unidades-container');
+                    const template = `
+                        <hr />
+                        <div class="form-group">
+                            <label class="control-label">Número UF</label>
+                            <input name="UnidadesFuncionales[${unidadIndex}].NumeroUF" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Piso</label>
+                            <input name="UnidadesFuncionales[${unidadIndex}].Piso" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Departamento</label>
+                            <input name="UnidadesFuncionales[${unidadIndex}].Departamento" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Nombre Propietario</label>
+                            <input name="UnidadesFuncionales[${unidadIndex}].NombrePropietario" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Mail Propietario</label>
+                            <input name="UnidadesFuncionales[${unidadIndex}].MailPropietario" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">DNI Propietario</label>
+                            <input name="UnidadesFuncionales[${unidadIndex}].DniPropietario" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Teléfono</label>
+                            <input name="UnidadesFuncionales[${unidadIndex}].Telefono" class="form-control" />
+                        </div>
+                    `;
+                    container.insertAdjacentHTML('beforeend', template);
+                    unidadIndex++;
+                });
+            </script>
+            }

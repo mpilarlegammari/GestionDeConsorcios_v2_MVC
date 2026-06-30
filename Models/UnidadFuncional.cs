@@ -1,4 +1,4 @@
-
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 public class UnidadFuncional
 {
     public int Id { get; set; }
@@ -12,6 +12,7 @@ public class UnidadFuncional
     public EstadoUnidadFuncional Estado { get; set; } = EstadoUnidadFuncional.Activa;
     public int ConsorcioId { get; set; }
 
+    [ValidateNever]
     public Consorcio Consorcio { get; set; } = null!;
     public List<Expensa> Expensas { get; set; } = new();
     public List<Reserva> Reservas { get; set; } = new();

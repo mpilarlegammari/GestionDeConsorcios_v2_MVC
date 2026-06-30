@@ -1,0 +1,102 @@
+@model UnidadFuncional
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>UnidadFuncional</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="NumeroUF" class="control-label"></label>
+                <input asp-for="NumeroUF" class="form-control" />
+                <span asp-validation-for="NumeroUF" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Piso" class="control-label"></label>
+                <input asp-for="Piso" class="form-control" />
+                <span asp-validation-for="Piso" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Departamento" class="control-label"></label>
+                <input asp-for="Departamento" class="form-control" />
+                <span asp-validation-for="Departamento" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="NombrePropietario" class="control-label"></label>
+                <input asp-for="NombrePropietario" class="form-control" />
+                <span asp-validation-for="NombrePropietario" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="MailPropietario" class="control-label"></label>
+                <input asp-for="MailPropietario" class="form-control" />
+                <span asp-validation-for="MailPropietario" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="DniPropietario" class="control-label"></label>
+                <input asp-for="DniPropietario" class="form-control" />
+                <span asp-validation-for="DniPropietario" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Telefono" class="control-label"></label>
+                <input asp-for="Telefono" class="form-control" />
+                <span asp-validation-for="Telefono" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Estado" class="control-label"></label>
+                <input asp-for="Estado" class="form-control" />
+                <span asp-validation-for="Estado" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ConsorcioId" class="control-label"></label>
+                <input asp-for="ConsorcioId" class="form-control" />
+                <span asp-validation-for="ConsorcioId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Consorcio" class="control-label"></label>
+                <input asp-for="Consorcio" class="form-control" />
+                <span asp-validation-for="Consorcio" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Expensas" class="control-label"></label>
+                <input asp-for="Expensas" class="form-control" />
+                <span asp-validation-for="Expensas" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Reservas" class="control-label"></label>
+                <input asp-for="Reservas" class="form-control" />
+                <span asp-validation-for="Reservas" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Reclamos" class="control-label"></label>
+                <input asp-for="Reclamos" class="form-control" />
+                <span asp-validation-for="Reclamos" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

@@ -1,4 +1,3 @@
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GestionDeConsorcios_v2_MVC.Context;
@@ -47,10 +46,18 @@ public class ConsorciosController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Nombre,Cuit,Direccion,Ciudad,CodigoPostal,CantidadPisos,Observaciones,Estado,FechaCreacion,UnidadesFuncionales,Gastos,Comunicados,Amenities")] Consorcio consorcio)
+    public async Task<IActionResult> Create([Bind("Id,Nombre,Cuit,Direccion,Ciudad,CodigoPostal,CantidadPisos,Observaciones,Estado,FechaCreacion,UnidadesFuncionales")] Consorcio consorcio)
     {
         if (ModelState.IsValid)
         {
+            if (consorcio.UnidadesFuncionales != null)
+            {
+                foreach (var uf in consorcio.UnidadesFuncionales)
+                {
+                    uf.Consorcio = consorcio;
+                }
+            }
+            consorcio.FechaCreacion = DateTime.UtcNow;
             _context.Add(consorcio);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -79,7 +86,7 @@ public class ConsorciosController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int? id, [Bind("Id,Nombre,Cuit,Direccion,Ciudad,CodigoPostal,CantidadPisos,Observaciones,Estado,FechaCreacion,UnidadesFuncionales,Gastos,Comunicados,Amenities")] Consorcio consorcio)
+    public async Task<IActionResult> Edit(int? id, [Bind("Id,Nombre,Cuit,Direccion,Ciudad,CodigoPostal,CantidadPisos,Observaciones,Estado,FechaCreacion,UnidadesFuncionales")] Consorcio consorcio)
     {
         if (id != consorcio.Id)
         {
