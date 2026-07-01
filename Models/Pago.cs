@@ -13,7 +13,8 @@ public class Pago
     public DateTime FechaCreacion { get; set; } = DateTime.UtcNow;
     public DateTime? FechaRevision { get; set; }
     public string? ObservacionAdministracion { get; set; }
-
+    public int? UnidadFuncionalId { get; set; }
+    public UnidadFuncional UnidadFuncional { get; set; } = null!;
 
     public Expensa Expensa { get; set; } = null!;
 }

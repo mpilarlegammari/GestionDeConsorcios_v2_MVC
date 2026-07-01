@@ -94,6 +94,12 @@ namespace GestionDeConsorcios_v2_MVC.Context
                 .HasForeignKey(r => r.UnidadFuncionalId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<UnidadFuncional>()
+                .HasMany(u => u.Pagos)
+                .WithOne(p => p.UnidadFuncional)
+                .HasForeignKey(p => p.UnidadFuncionalId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<Expensa>()
                 .HasMany(e => e.Pagos)
                 .WithOne(p => p.Expensa)

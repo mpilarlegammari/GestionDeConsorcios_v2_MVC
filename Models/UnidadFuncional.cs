@@ -22,6 +22,8 @@ public class UnidadFuncional
     [ValidateNever]
     public Usuario? Usuario { get; set; }
 
+    public List<Pago> Pagos { get; set; } = new();
+
 }
 
 public enum EstadoUnidadFuncional
