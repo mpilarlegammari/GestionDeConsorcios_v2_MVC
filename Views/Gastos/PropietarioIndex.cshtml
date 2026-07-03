@@ -1,0 +1,74 @@
+@model IEnumerable<Gasto>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutPropietario.cshtml";
+}
+
+
+<section class="page-intro">
+    <div>
+        <h2>Gastos</h2>
+        <p>Consulta de gastos del consorcio.</p>
+    </div>
+</section>
+
+<p>Listado de gastos</p>
+<table class="table table-clean">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.NumeroFactura)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Fecha)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Monto)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Concepto)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Categoria)
+            </th>
+            <th>
+                @Html.DisplayName("Comprobante")
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Descripcion)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(model => item.NumeroFactura)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Fecha)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Monto)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Concepto)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Categoria)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.ArchivoFacturaPath)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Descripcion)
+            </td>
+                <td class="table-actions">
+                <a asp-action="Details" asp-route-id="@item.Id">Detalles</a> |
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

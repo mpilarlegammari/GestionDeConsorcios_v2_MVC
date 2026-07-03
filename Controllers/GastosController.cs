@@ -15,8 +15,43 @@ public class GastosController : Controller
     // GET: GASTOS
     public async Task<IActionResult> Index()    
     {
-        // Incluir el consorcio 
-        return View(await _context.Gastos.Include(g => g.Consorcio).ToListAsync());
+
+        var rol = HttpContext.Session.GetString("UsuarioRol");
+
+        if (rol == RolUsuario.Administrador.ToString())
+        {        // Incluir el consorcio 
+            var gastos = await _context.Gastos
+                .Include(g => g.Consorcio)
+                .ToListAsync();
+
+            return View("AdminIndex", gastos);
+        }
+
+        if (rol == RolUsuario.Propietario.ToString())
+        {
+            var unidadFuncionalId =
+                HttpContext.Session.GetInt32("UnidadFuncionalId");
+
+            if (unidadFuncionalId == null)
+                return RedirectToAction("Login", "Auth");
+
+            var consorcioId = await _context.UnidadesFuncionales
+                .Where(u => u.Id == unidadFuncionalId)
+                .Select(u => u.ConsorcioId)
+                .FirstOrDefaultAsync();
+
+            var gastos = await _context.Gastos
+                .Include(g => g.Consorcio)
+                .Where(g => g.ConsorcioId == consorcioId)
+                .ToListAsync();
+
+            return View("PropietarioIndex", gastos);
+        }
+
+        return RedirectToAction("Login", "Auth");
+
+
+
     }
 
     // GET: GASTOS/Details/5
