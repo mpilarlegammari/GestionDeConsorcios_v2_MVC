@@ -15,7 +15,8 @@ public class GastosController : Controller
     // GET: GASTOS
     public async Task<IActionResult> Index()    
     {
-        return View(await _context.Gastos.ToListAsync());
+        // Incluir el consorcio 
+        return View(await _context.Gastos.Include(g => g.Consorcio).ToListAsync());
     }
 
     // GET: GASTOS/Details/5
@@ -27,6 +28,7 @@ public class GastosController : Controller
         }
 
         var gasto = await _context.Gastos
+            .Include(g => g.Consorcio)
             .FirstOrDefaultAsync(m => m.Id == id);
         if (gasto == null)
         {
@@ -86,6 +88,8 @@ public class GastosController : Controller
         {
             return NotFound();
         }
+        // Poblar lista de consorcios para el dropdown (mostrar Nombre pero almacenar Id)
+        ViewBag.Consorcios = new SelectList(_context.Consorcios, "Id", "Nombre", gasto.ConsorcioId);
         return View(gasto);
     }
 
@@ -94,7 +98,7 @@ public class GastosController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int? id, [Bind("Id,ConsorcioId,NumeroFactura,Fecha,Monto,Concepto,Categoria,ArchivoFacturaPath,Descripcion,FechaCreacion,Consorcio")] Gasto gasto)
+    public async Task<IActionResult> Edit(int? id, [Bind("Id,ConsorcioId,NumeroFactura,Fecha,Monto,Concepto,Categoria,ArchivoFacturaPath,Descripcion")] Gasto gasto)
     {
         if (id != gasto.Id)
         {
@@ -121,6 +125,8 @@ public class GastosController : Controller
             }
             return RedirectToAction(nameof(Index));
         }
+        // Si hay errores, repoblar la lista para que el dropdown se muestre correctamente
+        ViewBag.Consorcios = new SelectList(_context.Consorcios, "Id", "Nombre", gasto.ConsorcioId);
         return View(gasto);
     }
 

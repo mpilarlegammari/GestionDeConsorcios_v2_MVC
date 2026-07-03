@@ -1,0 +1,15 @@
+ADMINISTRADOR
+--------------------
+-VISTA INDEX GASTO, RESUMIR LOS VALORES
+	-QUE CONSORCIO ID SE VEA COMO EL NOMBRE DEL CONSORCIO
+	-edit y detalles gasto lo mismo
+	-validacion de que no exista otra factura igual
+-QUE LOS COMPROBANTES DE FACTURAS QUE CARGO SE VEAN COMO TAL Y NO CON EL PATH
+
+
+------------
+
+PROPIETARIO
+------------
+-EDITAR/CREAR PAGOS RESUMIR
+	-usar como refe "create" gasto

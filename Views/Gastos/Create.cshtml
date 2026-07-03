@@ -5,29 +5,28 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Create</h1>
-<p>REVISAR EL DATO CONSORCIO QUE ELIMINÉ DEL FORMULARIO</p>
-<h4>Gasto</h4>
+<h4>Cargar Gasto</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create" enctype="multipart/form-data">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="form-group">
-                <label asp-for="ConsorcioId" class="control-label"></label>
+                <label asp-for="ConsorcioId" class="control-label">Consorcio</label>
                 @Html.DropDownListFor(model => model.ConsorcioId, (SelectList)ViewBag.Consorcios, "Seleccione un consorcio", new { @class = "form-control" })
                 <span asp-validation-for="ConsorcioId" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="NumeroFactura" class="control-label"></label>
+                <label asp-for="NumeroFactura" class="control-label">Numero de factura</label>
                 <input asp-for="NumeroFactura" class="form-control" />
                 <span asp-validation-for="NumeroFactura" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Fecha" class="control-label"></label>
+                <label asp-for="Fecha" class="control-label">Fecha Gasto</label>
                 <input asp-for="Fecha" class="form-control" />
                 <span asp-validation-for="Fecha" class="text-danger"></span>
             </div>
@@ -47,13 +46,11 @@
             
             <div class="form-group">
                 <label asp-for="Categoria" class="control-label"></label>
-            <select asp-for="Categoria"
-                    asp-items="Html.GetEnumSelectList<CategoriaGasto>()"
-                    class="form-select">
-                <option value="">Seleccione una categoria</option>
-            </select>
+                <select asp-for="Categoria"
+                        asp-items="Html.GetEnumSelectList<CategoriaGasto>()"
+                        class="form-select"></select>
+                <span asp-validation-for="Categoria" class="text-danger"></span>
             </div>
-            <span asp-validation-for="Categoria" class="text-danger"></span>
 
 
             @*<div class="form-group">

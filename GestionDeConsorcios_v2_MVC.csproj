@@ -19,4 +19,12 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\pilar\source\repos\GestionDeConsorcios_v2_MVC\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\pilar\source\repos\GestionDeConsorcios_v2_MVC\.editorconfig" />
+  </ItemGroup>
+
 </Project>

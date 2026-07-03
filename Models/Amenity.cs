@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+
 public class Amenity
 {
     public int Id { get; set; }
@@ -7,6 +9,7 @@ public class Amenity
     public int Capacidad { get; set; }
     public bool Activo { get; set; } = true;
 
+    [ValidateNever]
     public Consorcio Consorcio { get; set; } = null!;
     public List<Reserva> Reservas { get; set; } = new();
 }

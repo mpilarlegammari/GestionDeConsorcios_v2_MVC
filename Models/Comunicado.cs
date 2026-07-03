@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+
 public class Comunicado
 {
     public int Id { get; set; }
@@ -8,5 +10,6 @@ public class Comunicado
     public string? ArchivoAdjuntoPath { get; set; }
     public bool Importante { get; set; }
 
-    public Consorcio Consorcio { get; set; } = null!;
+    [ValidateNever]
+    public Consorcio? Consorcio { get; set; } = null!;
 }

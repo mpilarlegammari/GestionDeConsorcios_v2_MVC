@@ -11,16 +11,18 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" method="post">
+            @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <label asp-for="ConsorcioId" class="control-label"></label>
-                <input asp-for="ConsorcioId" class="form-control" />
+                <label asp-for="ConsorcioId" class="control-label">Consorcio</label>
+                <select asp-for="ConsorcioId" asp-items="(SelectList)ViewBag.Consorcios" class="form-control"></select>
                 <span asp-validation-for="ConsorcioId" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="NumeroFactura" class="control-label"></label>
+                <label asp-for="NumeroFactura" class="control-label">Numero de factura</label>
                 <input asp-for="NumeroFactura" class="form-control" />
                 <span asp-validation-for="NumeroFactura" class="text-danger"></span>
             </div>
@@ -39,13 +41,21 @@
                 <input asp-for="Concepto" class="form-control" />
                 <span asp-validation-for="Concepto" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Categoria" class="control-label"></label>
-                <input asp-for="Categoria" class="form-control" />
+                <select asp-for="Categoria"
+                        asp-items="Html.GetEnumSelectList<CategoriaGasto>()"
+                        class="form-select">
+                </select>
+               @* <input asp-for="Categoria" class="form-control" />*@
                 <span asp-validation-for="Categoria" class="text-danger"></span>
             </div>
+
+
+
             <div class="form-group">
-                <label asp-for="ArchivoFacturaPath" class="control-label"></label>
+                <label asp-for="ArchivoFacturaPath" class="control-label">Comprobante</label>
                 <input asp-for="ArchivoFacturaPath" class="form-control" />
                 <span asp-validation-for="ArchivoFacturaPath" class="text-danger"></span>
             </div>
@@ -53,16 +63,6 @@
                 <label asp-for="Descripcion" class="control-label"></label>
                 <input asp-for="Descripcion" class="form-control" />
                 <span asp-validation-for="Descripcion" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FechaCreacion" class="control-label"></label>
-                <input asp-for="FechaCreacion" class="form-control" />
-                <span asp-validation-for="FechaCreacion" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Consorcio" class="control-label"></label>
-                <input asp-for="Consorcio" class="form-control" />
-                <span asp-validation-for="Consorcio" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
