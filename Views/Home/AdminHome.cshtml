@@ -1,9 +1,147 @@
 ﻿@{
-    ViewData["Title"] = "Admin Home Page";
+    ViewData["Title"] = "Panel de Administración";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">ADMIN HOME PAGE</a>.</p>
+<div class="container py-4">
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="mb-1">Resumen administrativo</h4>
+                <p class="mb-0 text-muted">
+                    Cantidad de asuntos pendientes por atender.
+                </p>
+            </div>
+
+            <div class="text-end">
+                <span class="display-5 fw-bold">@ViewBag.AsuntosPendientes</span>
+                <div class="text-muted">pendientes</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-md-6 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Expensas pendientes</h6>
+                    <h3>@ViewBag.ExpensasPendientes</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Pagos por revisar</h6>
+                    <h3>@ViewBag.PagosPendientesRevision</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Reclamos abiertos</h6>
+                    <h3>@ViewBag.ReclamosAbiertos</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Reservas pendientes</h6>
+                    <h3>@ViewBag.ReservasPendientes</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Botones de acceso rápido -->
+    <div class="row g-3">
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Consorcios</h5>
+                    <p class="card-text">Administrar datos de los consorcios registrados.</p>
+                    <div class="mt-auto">
+                        <a asp-controller="Consorcios" asp-action="Index" class="btn btn-primary">
+                            Ir a Consorcios
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Gastos</h5>
+                    <p class="card-text">Registrar y revisar los gastos del consorcio.</p>
+                    <div class="mt-auto">
+                        <a asp-controller="Gastos" asp-action="Index" class="btn btn-primary">
+                            Ir a Gastos
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Expensas</h5>
+                    <p class="card-text">Gestionar y emitir expensas para los copropietarios.</p>
+                    <div class="mt-auto">
+                        <a asp-controller="Expensas" asp-action="Index" class="btn btn-primary">
+                            Ir a Expensas
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Comunicados</h5>
+                    <p class="card-text">Crear y publicar comunicados para los vecinos.</p>
+                    <div class="mt-auto">
+                        <a asp-controller="Comunicados" asp-action="Index" class="btn btn-primary">
+                            Ir a Comunicados
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Reclamos</h5>
+                    <p class="card-text">Visualizar y atender reclamos de los vecinos.</p>
+                    <div class="mt-auto">
+                        <a asp-controller="Reclamos" asp-action="Index" class="btn btn-primary">
+                            Ir a Reclamos
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Reservas</h5>
+                    <p class="card-text">Gestionar reservas de espacios comunes.</p>
+                    <div class="mt-auto">
+                        <a asp-controller="Reservas" asp-action="Index" class="btn btn-primary">
+                            Ir a Reservas
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+

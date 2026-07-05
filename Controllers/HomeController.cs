@@ -1,3 +1,4 @@
+using GestionDeConsorcios_v2_MVC.Context;
 using GestionDeConsorcios_v2_MVC.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -6,6 +7,13 @@ namespace GestionDeConsorcios_v2_MVC.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly GestionDeConsorciosContext _context;
+
+        public HomeController(GestionDeConsorciosContext context)
+        {
+            _context = context;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -18,13 +26,39 @@ namespace GestionDeConsorcios_v2_MVC.Controllers
 
         public IActionResult AdminHome()
         {
-            // Redirige a la vista de administrador
+            var cantidadConsorcios = _context.Consorcios.Count();
+            var cantidadGastos = _context.Gastos.Count();
+
+            var expensasPendientes = _context.Expensas
+                .Count(e => e.Estado == EstadoExpensa.Pendiente);
+
+            var pagosPendientesRevision = _context.Pagos
+                .Count(p => p.Estado == EstadoPago.PendienteRevision);
+
+            var reclamosAbiertos = _context.Reclamos
+                .Count(r => r.Estado == EstadoReclamo.Abierto);
+
+            var reservasPendientes = _context.Reservas
+                .Count(r => r.Estado == EstadoReserva.Pendiente);
+
+            ViewBag.CantidadConsorcios = cantidadConsorcios;
+            ViewBag.CantidadGastos = cantidadGastos;
+            ViewBag.ExpensasPendientes = expensasPendientes;
+            ViewBag.PagosPendientesRevision = pagosPendientesRevision;
+            ViewBag.ReclamosAbiertos = reclamosAbiertos;
+            ViewBag.ReservasPendientes = reservasPendientes;
+
+            ViewBag.AsuntosPendientes =
+                expensasPendientes +
+                pagosPendientesRevision +
+                reclamosAbiertos +
+                reservasPendientes;
+
             return View();
         }
 
         public IActionResult PropietarioHome()
         {
-            // Redirige a la vista de propietario
             return View();
         }
 
