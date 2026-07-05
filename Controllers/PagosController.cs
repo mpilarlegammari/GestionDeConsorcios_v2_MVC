@@ -13,15 +13,42 @@ public class PagosController : Controller
     }
 
     // GET: PAGOS
-    public async Task<IActionResult> Index()    
+    public async Task<IActionResult> Index()
     {
-        int? unidadFuncionalId =
-    HttpContext.Session.GetInt32("UnidadFuncionalId");
+        var rol = HttpContext.Session.GetString("UsuarioRol");
 
-        var pagos = await _context.Pagos
-            .Where (p=> p.UnidadFuncionalId == unidadFuncionalId.Value).ToListAsync();
-        //  return View(await _context.Pagos.ToListAsync());
-        return View(pagos);
+        if (string.IsNullOrEmpty(rol))
+        {
+            return RedirectToAction("Login", "Auth");
+        }
+
+        if (rol == "Administrador")
+        {
+            var pagosAdmin = await _context.Pagos
+                .Include(p => p.Expensa)
+                .Include(p => p.UnidadFuncional)
+                .ToListAsync();
+
+            return View(pagosAdmin);
+        }
+
+        if (rol == "Propietario")
+        {
+            int? unidadFuncionalId = HttpContext.Session.GetInt32("UnidadFuncionalId");
+            if (unidadFuncionalId == null)
+                return RedirectToAction("Login", "Auth");
+
+            var pagosPropietario = await _context.Pagos
+                .Where(p => p.UnidadFuncionalId == unidadFuncionalId.Value)
+                .Include(p => p.Expensa)
+                .Include(p => p.UnidadFuncional)
+                .ToListAsync();
+
+            return View(pagosPropietario);
+        }
+
+        // Rol desconocido: redirigir a login por seguridad
+        return RedirectToAction("Login", "Auth");
     }
 
     // GET: PAGOS/Details/5
