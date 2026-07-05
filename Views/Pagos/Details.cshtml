@@ -1,82 +1,79 @@
 @model Pago
+@using Microsoft.AspNetCore.Http
 
 @{
-    ViewData["Title"] = "Details";
-    Layout = "~/Views/Shared/_LayoutPropietario.cshtml";
+    ViewData["Title"] = "Detalles de Pago";
+    var rol = Context.Session.GetString("UsuarioRol");
+    if (rol == "Administrador")
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+    else if (rol == "Propietario")
+    {
+        Layout = "~/Views/Shared/_LayoutPropietario.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutPropietario.cshtml"; // por defecto
+    }
 }
 
-<h1>Details</h1>
+<section class="page-intro">
+    <div>
+        <h2>Detalles de Pago</h2>
+        <p>Información registrada sobre el pago de expensa.</p>
+    </div>
+</section>
 
-<div>
-    <h4>Pago</h4>
-    <hr />
+<div class="card">
+    <div class="card-body">
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ExpensaId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ExpensaId)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaPago)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaPago)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MontoPagado)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MontoPagado)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MedioPago)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MedioPago)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NumeroOperacion)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NumeroOperacion)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.BancoEntidad)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.BancoEntidad)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ComprobantePath)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ComprobantePath)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Comentarios)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Comentarios)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Estado)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Estado)
-        </dd>
-    </dl>
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.FechaPago)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.FechaPago)</dd>
 
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.MontoPagado)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.MontoPagado)</dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.MedioPago)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.MedioPago)</dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.NumeroOperacion)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.NumeroOperacion)</dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.BancoEntidad)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.BancoEntidad)</dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Estado)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Estado)</dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Comentarios)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Comentarios)</dd>
+
+        @* Expensa disponible *@
+        @if (Model?.Expensa != null)
+        {
+            <dt class="col-sm-3">Expensa</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(m => m.Expensa.Periodo) (@Html.DisplayFor(m => m.Expensa.Id))</dd>
+        }
+        else
+        {
+            <dt class="col-sm-3">Expensa</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.ExpensaId)</dd>
+        }
+
+        @* Unidad funcional disponible *@
+        @if (Model?.UnidadFuncional != null)
+        {
+            <dt class="col-sm-3">Unidad funcional</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(m => m.UnidadFuncional.NumeroUF) (@Html.DisplayFor(m => m.UnidadFuncional.Id))</dd>
+        }
+        else if (Model?.UnidadFuncionalId != null)
+        {
+            <dt class="col-sm-3">Unidad funcional</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.UnidadFuncionalId)</dd>
+        }
+    </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a class="btn btn-secondary" asp-action="Index">Volver al listado</a>
 </div>
