@@ -52,6 +52,7 @@ public class PagosController : Controller
     }
 
     // GET: PAGOS/Details/5
+    // GET: PAGOS/Details/5
     public async Task<IActionResult> Details(int? id)
     {
         if (id == null)
@@ -59,14 +60,53 @@ public class PagosController : Controller
             return NotFound();
         }
 
-        var pago = await _context.Pagos
-            .FirstOrDefaultAsync(m => m.Id == id);
-        if (pago == null)
+        var rol = HttpContext.Session.GetString("UsuarioRol");
+
+        if (string.IsNullOrEmpty(rol))
         {
-            return NotFound();
+            return RedirectToAction("Login", "Auth");
         }
 
-        return View(pago);
+        if (rol == "Administrador")
+        {
+            var pagoAdmin = await _context.Pagos
+                .Include(p => p.Expensa)
+                .Include(p => p.UnidadFuncional)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (pagoAdmin == null)
+            {
+                return NotFound();
+            }
+
+            return View(pagoAdmin);
+        }
+
+        if (rol == "Propietario")
+        {
+            int? unidadFuncionalId = HttpContext.Session.GetInt32("UnidadFuncionalId");
+
+            if (unidadFuncionalId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            var pagoPropietario = await _context.Pagos
+                .Include(p => p.Expensa)
+                .Include(p => p.UnidadFuncional)
+                .FirstOrDefaultAsync(p =>
+                    p.Id == id &&
+                    p.UnidadFuncionalId == unidadFuncionalId.Value);
+
+            if (pagoPropietario == null)
+            {
+                return NotFound();
+            }
+
+            return View(pagoPropietario);
+        }
+
+        return RedirectToAction("Login", "Auth");
     }
 
     // GET: PAGOS/Create
