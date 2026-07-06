@@ -61,6 +61,13 @@
                         <span>Expensas</span>
                     </a>
 
+                    <a class="sidebar-link @(currentPath.StartsWith("/Pagos") ? "active" : "")"
+                       asp-controller="Pagos"
+                       asp-action="Index">
+                        <span class="sidebar-link-icon">₱</span>
+                        <span>Pagos</span>
+                    </a>
+
                     <a class="sidebar-link @(currentPath.StartsWith("/Comunicados") ? "active" : "")"
                        asp-controller="Comunicados"
                        asp-action="Index">
