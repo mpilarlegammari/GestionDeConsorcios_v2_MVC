@@ -1,0 +1,62 @@
+@model Expensa
+@using Microsoft.AspNetCore.Http
+
+@{
+    ViewData["Title"] = "Detalles de Expensa";
+
+    var rol = Context.Session.GetString("UsuarioRol");
+
+    if (rol == "Administrador")
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutPropietario.cshtml";
+    }
+}
+
+<section class="page-intro">
+    <div>
+        <h2>Detalles de Expensa</h2>
+        <p>Información registrada sobre la expensa.</p>
+    </div>
+</section>
+
+<div class="card">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Periodo</dt>
+            <dd class="col-sm-9">@Model.Periodo</dd>
+
+            <dt class="col-sm-3">Fecha de emisión</dt>
+            <dd class="col-sm-9">@Model.FechaEmision.ToShortDateString()</dd>
+
+            <dt class="col-sm-3">Fecha de vencimiento</dt>
+            <dd class="col-sm-9">@Model.FechaVencimiento.ToShortDateString()</dd>
+
+            <dt class="col-sm-3">Monto total</dt>
+            <dd class="col-sm-9">@Model.MontoTotal</dd>
+
+            <dt class="col-sm-3">Estado</dt>
+            <dd class="col-sm-9">@Model.Estado</dd>
+
+            <dt class="col-sm-3">Observaciones</dt>
+            <dd class="col-sm-9">@Model.Observaciones</dd>
+
+            <dt class="col-sm-3">Unidad funcional</dt>
+            <dd class="col-sm-9">
+                @if (Model.UnidadFuncional != null)
+                {
+                    @Model.UnidadFuncional.NumeroUF
+                }
+                else
+                {
+                    <span>-</span>
+                }
+            </dd>
+        </dl>
+
+        <a asp-action="Index" class="btn btn-secondary">Volver al listado</a>
+    </div>
+</div>
