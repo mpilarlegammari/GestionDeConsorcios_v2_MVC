@@ -50,28 +50,28 @@
         <dd class="col-sm-9">@Html.DisplayFor(model => model.Comentarios)</dd>
 
         @* Expensa disponible *@
-        @if (Model?.Expensa != null)
-        {
-            <dt class="col-sm-3">Expensa</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(m => m.Expensa.Periodo) (@Html.DisplayFor(m => m.Expensa.Id))</dd>
-        }
-        else
-        {
-            <dt class="col-sm-3">Expensa</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.ExpensaId)</dd>
-        }
+            @if (Model.Expensa != null)
+            {
+                <dt class="col-sm-3">Expensa</dt>
+                <dd class="col-sm-9">@Model.Expensa.Periodo (@Model.Expensa.Id)</dd>
+            }
+            else
+            {
+                <dt class="col-sm-3">Expensa</dt>
+                <dd class="col-sm-9">@Model.ExpensaId</dd>
+            }
 
         @* Unidad funcional disponible *@
-        @if (Model?.UnidadFuncional != null)
-        {
-            <dt class="col-sm-3">Unidad funcional</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(m => m.UnidadFuncional.NumeroUF) (@Html.DisplayFor(m => m.UnidadFuncional.Id))</dd>
-        }
-        else if (Model?.UnidadFuncionalId != null)
-        {
-            <dt class="col-sm-3">Unidad funcional</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.UnidadFuncionalId)</dd>
-        }
+            @if (Model.UnidadFuncional != null)
+            {
+                <dt class="col-sm-3">Unidad funcional</dt>
+                <dd class="col-sm-9">@Model.UnidadFuncional.NumeroUF (@Model.UnidadFuncional.Id)</dd>
+            }
+            else if (Model.UnidadFuncionalId != null)
+            {
+                <dt class="col-sm-3">Unidad funcional</dt>
+                <dd class="col-sm-9">@Model.UnidadFuncionalId</dd>
+            }
     </dl>
 </div>
 <div>
