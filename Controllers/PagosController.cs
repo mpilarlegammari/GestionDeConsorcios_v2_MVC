@@ -52,7 +52,6 @@ public class PagosController : Controller
     }
 
     // GET: PAGOS/Details/5
-    // GET: PAGOS/Details/5
     public async Task<IActionResult> Details(int? id)
     {
         if (id == null)
@@ -107,6 +106,55 @@ public class PagosController : Controller
         }
 
         return RedirectToAction("Login", "Auth");
+    }
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Aprobar(int id)
+    {
+        var rol = HttpContext.Session.GetString("UsuarioRol");
+
+        if (rol != "Administrador")
+        {
+            return RedirectToAction("Login", "Auth");
+        }
+
+        var pago = await _context.Pagos.FindAsync(id);
+
+        if (pago == null)
+        {
+            return NotFound();
+        }
+
+        pago.Estado = EstadoPago.Aprobado;
+
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction(nameof(Details), new { id = pago.Id });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Rechazar(int id)
+    {
+        var rol = HttpContext.Session.GetString("UsuarioRol");
+
+        if (rol != "Administrador")
+        {
+            return RedirectToAction("Login", "Auth");
+        }
+
+        var pago = await _context.Pagos.FindAsync(id);
+
+        if (pago == null)
+        {
+            return NotFound();
+        }
+
+        pago.Estado = EstadoPago.Rechazado;
+
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction(nameof(Details), new { id = pago.Id });
     }
 
     // GET: PAGOS/Create
