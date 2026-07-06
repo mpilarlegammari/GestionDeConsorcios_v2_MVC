@@ -106,6 +106,8 @@ public class ExpensasController : Controller
         if (string.IsNullOrEmpty(rol) || rol != "Administrador")
             return RedirectToAction("Login", "Auth");
 
+        ModelState.Remove("UnidadFuncional");
+
         if (ModelState.IsValid)
         {
             _context.Expensas.Add(expensa);
