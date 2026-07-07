@@ -1,0 +1,77 @@
+@model IEnumerable<Pago>
+@using Microsoft.AspNetCore.Http
+
+@{
+    ViewData["Title"] = "Pagos";
+    var rol = Context.Session.GetString("UsuarioRol");
+
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<section class="page-intro">
+    <div>
+        <h2>Pagos</h2>
+        <p>Consulta de pagos de expensas.</p>
+    </div>
+</section>
+
+<table class="table table-clean">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayName("Consorcio")
+            </th>
+            <th>
+                @Html.DisplayName("Unidad Funcional")
+            </th>
+            <th>
+                @Html.DisplayName("Fecha de pago")
+            </th>
+            <th>
+                @Html.DisplayName("Monto")
+            </th>
+            <th>
+                @Html.DisplayName("Medio de pago")
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Estado)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Comentarios)
+            </th>
+
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @item.UnidadFuncional?.Consorcio?.Nombre
+            </td>
+            <td>
+                @item.UnidadFuncional?.NumeroUF
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.FechaPago)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.MontoPagado)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.MedioPago)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Estado)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Comentarios)
+            </td>
+
+            <td class="table-actions">
+                <a asp-action="Details" asp-route-id="@item.Id">Detalles</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -4,19 +4,7 @@
 @{
     ViewData["Title"] = "Pagos";
     var rol = Context.Session.GetString("UsuarioRol");
-
-    if (rol == "Administrador")
-    {
-        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
-    }
-    else if (rol == "Propietario")
-    {
         Layout = "~/Views/Shared/_LayoutPropietario.cshtml";
-    }
-    else
-    {
-        Layout = "~/Views/Shared/_LayoutPropietario.cshtml";
-    }
 }
 
 <section class="page-intro">
@@ -24,10 +12,8 @@
         <h2>Pagos</h2>
         <p>Registro y consulta de pagos de expensas.</p>
     </div>
-    @if (rol == "Propietario")
-    {
         <a class="btn btn-primary" asp-action="Create">Informar Pago</a>
-    }
+
 </section>
 
 <table class="table table-clean">

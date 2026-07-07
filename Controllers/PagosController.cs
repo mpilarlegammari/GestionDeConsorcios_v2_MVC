@@ -24,32 +24,45 @@ public class PagosController : Controller
 
         if (rol == "Administrador")
         {
-            var pagosAdmin = await _context.Pagos
-                .Include(p => p.Expensa)
-                .Include(p => p.UnidadFuncional)
-                .ToListAsync();
-
-            return View(pagosAdmin);
+            return RedirectToAction("IndexAdmin", "Pagos");
         }
 
         if (rol == "Propietario")
         {
-            int? unidadFuncionalId = HttpContext.Session.GetInt32("UnidadFuncionalId");
-            if (unidadFuncionalId == null)
-                return RedirectToAction("Login", "Auth");
-
-            var pagosPropietario = await _context.Pagos
-                .Where(p => p.UnidadFuncionalId == unidadFuncionalId.Value)
-                .Include(p => p.Expensa)
-                .Include(p => p.UnidadFuncional)
-                .ToListAsync();
-
-            return View(pagosPropietario);
+            
+                return RedirectToAction("IndexPropietario", "Pagos");
         }
 
-        // Rol desconocido: redirigir a login por seguridad
         return RedirectToAction("Login", "Auth");
     }
+
+    public async Task<IActionResult> IndexAdmin()
+    {
+        var pagosAdmin = await _context.Pagos
+        .Include(p => p.Expensa)
+        .Include(p => p.UnidadFuncional)
+                        .ThenInclude(uf => uf.Consorcio)
+        .ToListAsync();
+
+        return View(pagosAdmin);
+    }
+
+    public async Task<IActionResult> IndexPropietario()
+    {
+        int? unidadFuncionalId = HttpContext.Session.GetInt32("UnidadFuncionalId");
+        if (unidadFuncionalId == null)
+            return RedirectToAction("Login", "Auth");
+
+        var pagosPropietario = await _context.Pagos
+            .Where(p => p.UnidadFuncionalId == unidadFuncionalId.Value)
+            .Include(p => p.Expensa)
+            .Include(p => p.UnidadFuncional)
+            .ToListAsync();
+
+        return View(pagosPropietario);
+    }
+
+
 
     // GET: PAGOS/Details/5
     public async Task<IActionResult> Details(int? id)
