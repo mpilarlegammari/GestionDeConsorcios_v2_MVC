@@ -119,6 +119,64 @@ public class ExpensasController : Controller
         return View(expensa);
     }
 
+    // GET: EXPENSAS/Edit/5
+    public async Task<IActionResult> Edit(int? id)
+    {
+        var rol = HttpContext.Session.GetString("UsuarioRol");
+
+        if (string.IsNullOrEmpty(rol) || rol != "Administrador")
+            return RedirectToAction("Login", "Auth");
+
+        if (id == null)
+            return NotFound();
+
+        var expensa = await _context.Expensas.FindAsync(id);
+
+        if (expensa == null)
+            return NotFound();
+
+        ViewBag.Unidades = new SelectList(_context.UnidadesFuncionales, "Id", "NumeroUF", expensa.UnidadFuncionalId);
+
+        return View(expensa);
+    }
+
+    // POST: EXPENSAS/Edit/5
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(int id, [Bind("Id,UnidadFuncionalId,Periodo,FechaEmision,FechaVencimiento,MontoTotal,Estado,Observaciones")] Expensa expensa)
+    {
+        var rol = HttpContext.Session.GetString("UsuarioRol");
+
+        if (string.IsNullOrEmpty(rol) || rol != "Administrador")
+            return RedirectToAction("Login", "Auth");
+
+        if (id != expensa.Id)
+            return NotFound();
+
+        ModelState.Remove("UnidadFuncional");
+
+        if (ModelState.IsValid)
+        {
+            try
+            {
+                _context.Update(expensa);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ExpensaExists(expensa.Id))
+                    return NotFound();
+                else
+                    throw;
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        ViewBag.Unidades = new SelectList(_context.UnidadesFuncionales, "Id", "NumeroUF", expensa.UnidadFuncionalId);
+        return View(expensa);
+    }
+
     private bool ExpensaExists(int? id)
     {
         return _context.Expensas.Any(e => e.Id == id);

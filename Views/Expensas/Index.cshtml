@@ -61,6 +61,12 @@
                 </td>
                 <td class="table-actions">
                     <a asp-action="Details" asp-route-id="@item.Id">Detalles</a>
+
+                    @if (rol == "Administrador")
+                    {
+                        <span>|</span>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                    }
                 </td>
             </tr>
         }
