@@ -21,8 +21,12 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.UnidadFuncionalId)
+                @Html.DisplayName("Consorcio")
             </th>
+            <th>
+                @Html.DisplayName("Unidad Funcional")
+            </th>
+
             <th>
                 @Html.DisplayNameFor(model => model.Asunto)
             </th>
@@ -45,8 +49,12 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(model => item.UnidadFuncionalId)
+                @item.UnidadFuncional?.Consorcio?.Nombre
             </td>
+            <td>
+                @item.UnidadFuncional?.NumeroUF
+            </td>
+
             <td>
                 @Html.DisplayFor(model => item.Asunto)
             </td>

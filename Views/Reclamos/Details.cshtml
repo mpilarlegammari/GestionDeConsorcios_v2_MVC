@@ -25,10 +25,16 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UnidadFuncionalId)
+            @Html.DisplayName("Unidad")
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UnidadFuncionalId)
+            @Model?.UnidadFuncional?.NumeroUF
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayName("Consorcio")
+        </dt>
+        <dd class = "col-sm-10">
+            @Model?.UnidadFuncional?.Consorcio?.Nombre
         </dd>
     </dl>
         <dt class = "col-sm-2">
@@ -82,6 +88,5 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

@@ -46,7 +46,11 @@ public class ReclamosController : Controller
 
     public async Task<IActionResult> IndexAdmin()
     {
-        var reclamosAdmin = await _context.Reclamos.Include(r => r.UnidadFuncional).ToListAsync();
+        // incluyo la UF y su Consorcio para mostrar NumeroUF y Nombre del Consorcio en la vista
+        var reclamosAdmin = await _context.Reclamos
+            .Include(r => r.UnidadFuncional)
+                .ThenInclude(uf => uf.Consorcio)
+            .ToListAsync();
         return View(reclamosAdmin);
     }
 
@@ -74,7 +78,10 @@ public class ReclamosController : Controller
             return NotFound();
         }
 
+        // Incluir UnidadFuncional y su Consorcio para mostrar datos relacionados en la vista
         var reclamo = await _context.Reclamos
+            .Include(r => r.UnidadFuncional)
+                .ThenInclude(uf => uf.Consorcio)
             .FirstOrDefaultAsync(m => m.Id == id);
         if (reclamo == null)
         {
@@ -129,8 +136,10 @@ public class ReclamosController : Controller
             return NotFound();
         }
 
+        // Incluir UnidadFuncional y Consorcio para mostrar en la vista de edición
         var reclamo = await _context.Reclamos
             .Include(r => r.UnidadFuncional)
+                .ThenInclude(uf => uf.Consorcio)
             .FirstOrDefaultAsync(r => r.Id == id);
 
         if (reclamo == null)
