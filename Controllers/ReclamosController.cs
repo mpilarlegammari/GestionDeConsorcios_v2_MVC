@@ -25,9 +25,7 @@ public class ReclamosController : Controller
 
         if (rol == "Administrador")
         {
-            var reclamosAdmin = await _context.Reclamos
-                .ToListAsync();
-
+            var reclamosAdmin = await _context.Reclamos.Include(r => r.UnidadFuncional).ToListAsync();
             return View(reclamosAdmin);
         }
 
@@ -37,9 +35,7 @@ public class ReclamosController : Controller
             if (unidadFuncionalId == null)
                 return RedirectToAction("Login", "Auth");
 
-            var reclamosPropietario = await _context.Reclamos
-                .Where(p => p.UnidadFuncionalId == unidadFuncionalId.Value)
-                .ToListAsync();
+            var reclamosPropietario = await _context.Reclamos.Include(r => r.UnidadFuncional).Where(r => r.UnidadFuncionalId == unidadFuncionalId.Value).ToListAsync();
 
             return View(reclamosPropietario);
         }
@@ -86,8 +82,6 @@ public class ReclamosController : Controller
     }
 
     // POST: RECLAMOS/Create
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("Id,UnidadFuncionalId,Asunto,Categoria,Descripcion,Estado,FechaCreacion,FechaCierre,ObservacionAdministracion,UnidadFuncional")] Reclamo reclamo)
@@ -104,51 +98,65 @@ public class ReclamosController : Controller
     // GET: RECLAMOS/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
+        var rol = HttpContext.Session.GetString("UsuarioRol");
+
+        if (rol != "Administrador")
+        {
+            return RedirectToAction("Login", "Auth");
+        }
+
         if (id == null)
         {
             return NotFound();
         }
 
-        var reclamo = await _context.Reclamos.FindAsync(id);
+        var reclamo = await _context.Reclamos
+            .Include(r => r.UnidadFuncional)
+            .FirstOrDefaultAsync(r => r.Id == id);
+
         if (reclamo == null)
         {
             return NotFound();
         }
+
         return View(reclamo);
     }
 
     // POST: RECLAMOS/Edit/5
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int? id, [Bind("Id,UnidadFuncionalId,Asunto,Categoria,Descripcion,Estado,FechaCreacion,FechaCierre,ObservacionAdministracion,UnidadFuncional")] Reclamo reclamo)
+    public async Task<IActionResult> Edit(int id, [Bind("Id,Estado,FechaCierre,ObservacionAdministracion")] Reclamo datos)
     {
-        if (id != reclamo.Id)
+        var rol = HttpContext.Session.GetString("UsuarioRol");
+
+        if (rol != "Administrador")
+        {
+            return RedirectToAction("Login", "Auth");
+        }
+
+        var reclamo = await _context.Reclamos.FindAsync(id);
+
+        if (reclamo == null)
+        {
+            return NotFound();
+        }
+
+        if (id != datos.Id)
         {
             return NotFound();
         }
 
         if (ModelState.IsValid)
         {
-            try
-            {
-                _context.Update(reclamo);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ReclamoExists(reclamo.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            reclamo.Estado = datos.Estado;
+            reclamo.FechaCierre = datos.FechaCierre;
+            reclamo.ObservacionAdministracion = datos.ObservacionAdministracion;
+
+            await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
+
         return View(reclamo);
     }
 
