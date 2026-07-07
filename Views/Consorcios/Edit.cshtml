@@ -10,86 +10,240 @@
 <h4>Consorcio</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
+    <div class="col-md-8">
+        <form asp-action="Edit" method="post">
+            @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @if (ViewBag.ModelErrors != null)
+            {
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach (var err in (List<string>)ViewBag.ModelErrors)
+                        {
+                            <li>@err</li>
+                        }
+                    </ul>
+                </div>
+            }
             <input type="hidden" asp-for="Id" />
+
             <div class="form-group">
                 <label asp-for="Nombre" class="control-label"></label>
                 <input asp-for="Nombre" class="form-control" />
                 <span asp-validation-for="Nombre" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Cuit" class="control-label"></label>
                 <input asp-for="Cuit" class="form-control" />
                 <span asp-validation-for="Cuit" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Direccion" class="control-label"></label>
                 <input asp-for="Direccion" class="form-control" />
                 <span asp-validation-for="Direccion" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Ciudad" class="control-label"></label>
                 <input asp-for="Ciudad" class="form-control" />
                 <span asp-validation-for="Ciudad" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="CodigoPostal" class="control-label"></label>
                 <input asp-for="CodigoPostal" class="form-control" />
                 <span asp-validation-for="CodigoPostal" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="CantidadPisos" class="control-label"></label>
                 <input asp-for="CantidadPisos" class="form-control" />
                 <span asp-validation-for="CantidadPisos" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Observaciones" class="control-label"></label>
                 <input asp-for="Observaciones" class="form-control" />
                 <span asp-validation-for="Observaciones" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Estado" class="control-label"></label>
-                <input asp-for="Estado" class="form-control" />
+                <select asp-for="Estado" asp-items="Html.GetEnumSelectList<EstadoConsorcio>()" class="form-select"></select>
                 <span asp-validation-for="Estado" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="FechaCreacion" class="control-label"></label>
-                <input asp-for="FechaCreacion" class="form-control" />
-                <span asp-validation-for="FechaCreacion" class="text-danger"></span>
+
+            <hr />
+            <h5>Unidades Funcionales</h5>
+            <div id="unidades-container">
+                @if (Model.UnidadesFuncionales != null && Model.UnidadesFuncionales.Any())
+                {
+                    for (int i = 0; i < Model.UnidadesFuncionales.Count; i++)
+                    {
+                        <div class="unidad-item" data-index="@i">
+                            <input type="hidden" name="UnidadesFuncionales[@i].Id" value="@Model.UnidadesFuncionales[i].Id" />
+                            <div class="form-group">
+                                <label class="control-label">Número UF</label>
+                                <input name="UnidadesFuncionales[@i].NumeroUF" value="@Model.UnidadesFuncionales[i].NumeroUF" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Piso</label>
+                                <input name="UnidadesFuncionales[@i].Piso" value="@Model.UnidadesFuncionales[i].Piso" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Departamento</label>
+                                <input name="UnidadesFuncionales[@i].Departamento" value="@Model.UnidadesFuncionales[i].Departamento" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Nombre Propietario</label>
+                                <input name="UnidadesFuncionales[@i].NombrePropietario" value="@Model.UnidadesFuncionales[i].NombrePropietario" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Mail Propietario</label>
+                                <input name="UnidadesFuncionales[@i].MailPropietario" value="@Model.UnidadesFuncionales[i].MailPropietario" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">DNI Propietario</label>
+                                <input name="UnidadesFuncionales[@i].DniPropietario" value="@Model.UnidadesFuncionales[i].DniPropietario" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Teléfono</label>
+                                <input name="UnidadesFuncionales[@i].Telefono" value="@Model.UnidadesFuncionales[i].Telefono" class="form-control" />
+                            </div>
+                            <button type="button" class="btn btn-sm btn-danger remove-unidad">Quitar unidad</button>
+                            <hr />
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="form-group">
+                        <label class="control-label">Número UF</label>
+                        <input name="UnidadesFuncionales[0].NumeroUF" class="form-control" />
+                    </div>
+                }
             </div>
-            <div class="form-group">
-                <label asp-for="UnidadesFuncionales" class="control-label"></label>
-                <input asp-for="UnidadesFuncionales" class="form-control" />
-                <span asp-validation-for="UnidadesFuncionales" class="text-danger"></span>
+            <button type="button" id="agregar-unidad" class="btn btn-secondary">Agregar unidad</button>
+
+            <hr />
+            <h5>Amenities</h5>
+            <div id="amenities-container">
+                @if (Model.Amenities != null && Model.Amenities.Any())
+                {
+                    for (int i = 0; i < Model.Amenities.Count; i++)
+                    {
+                        <div class="amenity-item" data-index="@i">
+                            <input type="hidden" name="Amenities[@i].Id" value="@Model.Amenities[i].Id" />
+                            <div class="form-group">
+                                <label class="control-label">Nombre</label>
+                                <input name="Amenities[@i].Nombre" value="@Model.Amenities[i].Nombre" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Descripción</label>
+                                <input name="Amenities[@i].Descripcion" value="@Model.Amenities[i].Descripcion" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Capacidad</label>
+                                <input name="Amenities[@i].Capacidad" type="number" value="@Model.Amenities[i].Capacidad" class="form-control" />
+                            </div>
+                            <button type="button" class="btn btn-sm btn-danger remove-amenity">Quitar amenity</button>
+                            <hr />
+                        </div>
+                    }
+                }
             </div>
-            <div class="form-group">
-                <label asp-for="Gastos" class="control-label"></label>
-                <input asp-for="Gastos" class="form-control" />
-                <span asp-validation-for="Gastos" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Comunicados" class="control-label"></label>
-                <input asp-for="Comunicados" class="form-control" />
-                <span asp-validation-for="Comunicados" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Amenities" class="control-label"></label>
-                <input asp-for="Amenities" class="form-control" />
-                <span asp-validation-for="Amenities" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+            <button type="button" id="agregar-amenity" class="btn btn-secondary">Agregar amenity</button>
+
+            <div class="form-group mt-3">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Volver</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Volver</a>
-</div>
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // unidades
+        let unidadIndex = @((Model.UnidadesFuncionales != null) ? Model.UnidadesFuncionales.Count : 1);
+        document.getElementById('agregar-unidad').addEventListener('click', function () {
+            const container = document.getElementById('unidades-container');
+            const idx = unidadIndex;
+            const template = `\
+                <div class="unidad-item" data-index="${idx}">\
+                    <div class="form-group">\
+                        <label class="control-label">Número UF</label>\
+                        <input name="UnidadesFuncionales[${idx}].NumeroUF" class="form-control" />\
+                    </div>\
+                    <div class="form-group">\
+                        <label class="control-label">Piso</label>\
+                        <input name="UnidadesFuncionales[${idx}].Piso" class="form-control" />\
+                    </div>\
+                    <div class="form-group">\
+                        <label class="control-label">Departamento</label>\
+                        <input name="UnidadesFuncionales[${idx}].Departamento" class="form-control" />\
+                    </div>\
+                    <div class="form-group">\
+                        <label class="control-label">Nombre Propietario</label>\
+                        <input name="UnidadesFuncionales[${idx}].NombrePropietario" class="form-control" />\
+                    </div>\
+                    <div class="form-group">\
+                        <label class="control-label">Mail Propietario</label>\
+                        <input name="UnidadesFuncionales[${idx}].MailPropietario" class="form-control" />\
+                    </div>\
+                    <div class="form-group">\
+                        <label class="control-label">DNI Propietario</label>\
+                        <input name="UnidadesFuncionales[${idx}].DniPropietario" class="form-control" />\
+                    </div>\
+                    <div class="form-group">\
+                        <label class="control-label">Teléfono</label>\
+                        <input name="UnidadesFuncionales[${idx}].Telefono" class="form-control" />\
+                    </div>\
+                    <button type="button" class="btn btn-sm btn-danger remove-unidad">Quitar unidad</button>\
+                    <hr />\
+                </div>`;
+            container.insertAdjacentHTML('beforeend', template);
+            unidadIndex++;
+        });
+
+        document.addEventListener('click', function (e) {
+            if (e.target && e.target.classList.contains('remove-unidad')) {
+                const item = e.target.closest('.unidad-item');
+                if (item) item.remove();
+            }
+            if (e.target && e.target.classList.contains('remove-amenity')) {
+                const item = e.target.closest('.amenity-item');
+                if (item) item.remove();
+            }
+        });
+
+        // amenities
+        let amenityIndex = @((Model.Amenities != null) ? Model.Amenities.Count : 1);
+        document.getElementById('agregar-amenity').addEventListener('click', function () {
+            const container = document.getElementById('amenities-container');
+            const idx = amenityIndex;
+            const template = `\
+                <div class="amenity-item" data-index="${idx}">\
+                    <div class="form-group">\
+                        <label class="control-label">Nombre</label>\
+                        <input name="Amenities[${idx}].Nombre" class="form-control" />\
+                    </div>\
+                    <div class="form-group">\
+                        <label class="control-label">Descripción</label>\
+                        <input name="Amenities[${idx}].Descripcion" class="form-control" />\
+                    </div>\
+                    <div class="form-group">\
+                        <label class="control-label">Capacidad</label>\
+                        <input name="Amenities[${idx}].Capacidad" type="number" class="form-control" />\
+                    </div>\
+                    <button type="button" class="btn btn-sm btn-danger remove-amenity">Quitar amenity</button>\
+                    <hr />\
+                </div>`;
+            container.insertAdjacentHTML('beforeend', template);
+            amenityIndex++;
+        });
+    </script>
 }

@@ -11,8 +11,20 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
             <div asp-validation-summary="All" class="text-danger"></div>
+            @if (ViewBag.ModelErrors != null)
+            {
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach (var err in (List<string>)ViewBag.ModelErrors)
+                        {
+                            <li>@err</li>
+                        }
+                    </ul>
+                </div>
+            }
 
             <div class="form-group">
                 <label asp-for="Nombre" class="control-label"></label>
@@ -56,7 +68,7 @@
                 <span asp-validation-for="Observaciones" class="text-danger"></span>
             </div>
 
-            <p>Unidades Funcionales:</p>
+            <h5>Unidades Funcionales</h5>
 
             <div id="unidades-container">
                 <div class="form-group">
@@ -77,8 +89,7 @@
                     <input name="UnidadesFuncionales[0].Departamento" class="form-control" />
                     <span asp-validation-for="UnidadesFuncionales[0].Departamento" class="text-danger"></span>
                 </div>
-
-                
+                               
 
                 <div class="form-group">
                     <label asp-for="UnidadesFuncionales[0].NombrePropietario" class="control-label"></label>
@@ -108,9 +119,28 @@
 
             </div>
 
-                        <button type="button" id="agregar-unidad">
+            <button type="button" id="agregar-unidad" class="btn btn-secondary">
                             Agregar unidad
                         </button>
+
+            <hr />
+            <h5>Amenities:</h5>
+            <div id="amenities-container">
+                <div class="form-group">
+                    <label class="control-label">Nombre</label>
+                    <input name="Amenities[0].Nombre" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Descripción</label>
+                    <input name="Amenities[0].Descripcion" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Capacidad</label>
+                    <input name="Amenities[0].Capacidad" type="number" class="form-control" />
+                </div>
+            </div>
+
+            <button type="button" id="agregar-amenity" class="btn btn-secondary">Agregar amenity</button>
 
                         <div class="form-group">
                             <input type="submit" value="Create" class="btn btn-primary" />
@@ -118,7 +148,7 @@
                     </form>
                 </div>
             </div>
-
+            <br />
             <div>
                 <a asp-action="Index">Back to List</a>
             </div>
@@ -161,6 +191,28 @@
                     `;
                     container.insertAdjacentHTML('beforeend', template);
                     unidadIndex++;
+                });
+
+                let amenityIndex = 1;
+                document.getElementById('agregar-amenity').addEventListener('click', function () {
+                    const container = document.getElementById('amenities-container');
+                    const template = `
+                        <hr />
+                        <div class="form-group">
+                            <label class="control-label">Nombre</label>
+                            <input name="Amenities[${amenityIndex}].Nombre" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Descripción</label>
+                            <input name="Amenities[${amenityIndex}].Descripcion" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Capacidad</label>
+                            <input name="Amenities[${amenityIndex}].Capacidad" type="number" class="form-control" />
+                        </div>
+                    `;
+                    container.insertAdjacentHTML('beforeend', template);
+                    amenityIndex++;
                 });
             </script>
             }

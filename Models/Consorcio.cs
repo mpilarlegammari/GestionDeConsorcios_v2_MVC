@@ -9,7 +9,7 @@ public class Consorcio
     public string CodigoPostal { get; set; } = string.Empty;
     public int CantidadPisos { get; set; }
     public string? Observaciones { get; set; }
-    public EstadoConsorcio Estado { get; set; } = EstadoConsorcio.Pendiente;
+    public EstadoConsorcio Estado { get; set; } = EstadoConsorcio.Activo;
     public DateTime FechaCreacion { get; set; } = DateTime.UtcNow;
 
     public List<UnidadFuncional> UnidadesFuncionales { get; set; } = new();

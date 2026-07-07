@@ -74,11 +74,21 @@
             @Html.DisplayFor(model => model.FechaCreacion)
         </dd>
     
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UnidadesFuncionales)
-        </dt>
+        <dt class = "col-sm-2">Unidades</dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UnidadesFuncionales)
+            @if (Model.UnidadesFuncionales != null && Model.UnidadesFuncionales.Any())
+            {
+                <ul>
+                    @foreach (var uf in Model.UnidadesFuncionales)
+                    {
+                        <li>@uf.NumeroUF - @uf.NombrePropietario (@uf.MailPropietario)</li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <span>-</span>
+            }
         </dd>
     @*
         <dt class = "col-sm-2">
@@ -95,11 +105,21 @@
             @Html.DisplayFor(model => model.Comunicados)
         </dd>*@
     
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Amenities)
-        </dt>
+        <dt class = "col-sm-2">Amenities</dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Amenities)
+            @if (Model.Amenities != null && Model.Amenities.Any())
+            {
+                <ul>
+                    @foreach (var am in Model.Amenities)
+                    {
+                        <li>@am.Nombre - Capacidad: @am.Capacidad</li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <span>-</span>
+            }
         </dd>
     </dl>
 </div>

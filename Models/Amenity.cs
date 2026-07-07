@@ -11,5 +11,6 @@ public class Amenity
 
     [ValidateNever]
     public Consorcio Consorcio { get; set; } = null!;
+    [ValidateNever]
     public List<Reserva> Reservas { get; set; } = new();
 }
