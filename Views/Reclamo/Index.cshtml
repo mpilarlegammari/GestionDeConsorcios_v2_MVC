@@ -1,38 +1,15 @@
 @model IEnumerable<Reclamo>
 
-
 @{
     ViewData["Title"] = "Index";
-    var rol = Context.Session.GetString("UsuarioRol");
-
-    if (rol == "Administrador")
-    {
-        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
-    }
-    else if (rol == "Propietario")
-    {
-        Layout = "~/Views/Shared/_LayoutPropietario.cshtml";
-    }
-    else
-    {
-        Layout = "~/Views/Shared/_LayoutPropietario.cshtml";
-    }
 }
 
-<section class="page-intro">
-    <div>
-        <h2>Reclamos</h2>
-        <p>Registro y consulta de reclamos realizados</p>
-    </div>
+<h1>Index</h1>
 
-        @if (rol == "Propietario")
-    {
-        <a class="btn btn-primary" asp-action="Create">Crear reclamo</a>
-    }
-</section>
-
-
-<table class="table table-clean">
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
     <thead>
         <tr>
             <th>
@@ -52,6 +29,15 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FechaCreacion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaCierre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ObservacionAdministracion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UnidadFuncional)
             </th>
             <th></th>
         </tr>
@@ -77,23 +63,21 @@
             <td>
                 @Html.DisplayFor(model => item.FechaCreacion)
             </td>
-            
-                @if (rol == "Propietario")
-                {
+            <td>
+                @Html.DisplayFor(model => item.FechaCierre)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.ObservacionAdministracion)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.UnidadFuncional)
+            </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                    </td>                
-                }
-
-                @if (rol == "Administrador")
-                {
-            <td>
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
-                    </td>                
-                }
-            </tr>
+            </td>
+        </tr>
 }
     </tbody>
 </table>

@@ -1,4 +1,6 @@
 
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+
 public class Reclamo
 {
     public int Id { get; set; }
@@ -11,6 +13,7 @@ public class Reclamo
     public DateTime? FechaCierre { get; set; }
     public string? ObservacionAdministracion { get; set; }
 
+    [ValidateNever]
     public UnidadFuncional UnidadFuncional { get; set; } = null!;
 }
 

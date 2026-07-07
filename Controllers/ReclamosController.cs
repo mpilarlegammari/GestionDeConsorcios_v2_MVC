@@ -25,19 +25,15 @@ public class ReclamosController : Controller
 
         if (rol == "Administrador")
         {
-            var reclamosAdmin = await _context.Reclamos.Include(r => r.UnidadFuncional).ToListAsync();
-            return View(reclamosAdmin);
+            // var reclamosAdmin = await _context.Reclamos.Include(r => r.UnidadFuncional).ToListAsync();
+             //return View(reclamosAdmin);*@
+
+            return RedirectToAction("IndexAdmin", "Reclamos");
         }
 
         if (rol == "Propietario")
         {
-            int? unidadFuncionalId = HttpContext.Session.GetInt32("UnidadFuncionalId");
-            if (unidadFuncionalId == null)
-                return RedirectToAction("Login", "Auth");
-
-            var reclamosPropietario = await _context.Reclamos.Include(r => r.UnidadFuncional).Where(r => r.UnidadFuncionalId == unidadFuncionalId.Value).ToListAsync();
-
-            return View(reclamosPropietario);
+            return RedirectToAction("IndexPropietario", "Reclamos");
         }
 
         // Rol desconocido: redirigir a login por seguridad
@@ -48,9 +44,22 @@ public class ReclamosController : Controller
 
 
 
+    public async Task<IActionResult> IndexAdmin()
+    {
+        var reclamosAdmin = await _context.Reclamos.Include(r => r.UnidadFuncional).ToListAsync();
+        return View(reclamosAdmin);
+    }
 
+    public async Task<IActionResult> IndexPropietario()
+    {
+        int? unidadFuncionalId = HttpContext.Session.GetInt32("UnidadFuncionalId");
+        if (unidadFuncionalId == null)
+            return RedirectToAction("Login", "Auth");
 
+        var reclamosPropietario = await _context.Reclamos.Include(r => r.UnidadFuncional).Where(r => r.UnidadFuncionalId == unidadFuncionalId.Value).ToListAsync();
 
+        return View(reclamosPropietario);
+    }
 
 
 
@@ -84,14 +93,24 @@ public class ReclamosController : Controller
     // POST: RECLAMOS/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,UnidadFuncionalId,Asunto,Categoria,Descripcion,Estado,FechaCreacion,FechaCierre,ObservacionAdministracion,UnidadFuncional")] Reclamo reclamo)
+    public async Task<IActionResult> Create([Bind("Asunto,Categoria,Descripcion")] Reclamo reclamo)
     {
         if (ModelState.IsValid)
         {
+            int? ufId = HttpContext.Session.GetInt32("UnidadFuncionalId");
+
+            if (ufId == null)
+                return RedirectToAction("Login", "Auth");
+
+            reclamo.UnidadFuncionalId = (int)ufId;
+            reclamo.FechaCreacion = DateTime.Now;
             _context.Add(reclamo);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+
+
         return View(reclamo);
     }
 
