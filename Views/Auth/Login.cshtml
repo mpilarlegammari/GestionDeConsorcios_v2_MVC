@@ -1,23 +1,53 @@
 @model Usuario
 
 @{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Login - Sistema de Gestión de Consorcios";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Login</h2>
+    <main class="auth-shell">
+        <section class="auth-panel">
 
-<form asp-action="Login" method="post">
-    <div class="form-group">
-        <label asp-for="Email" class="control-label"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="PasswordHash" class="control-label">Contraseña</label>
-        <input asp-for="PasswordHash" class="form-control" type="password" />
-        <span asp-validation-for="PasswordHash" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <button type="submit" class="btn btn-primary">Iniciar sesión</button>
-    </div>
-</form>
+            <div>
+                <span>Acceso al sistema</span>
+                <h1>Sistema de Gestión de Consorcios</h1>
+                <p>
+                    Ingresá como Propietario o Administrador
+                </p>
+            </div>
+
+            <div>
+                <span></span>
+                <div>
+                </div>
+            </div>
+        </section>
+            <section class="auth-content">
+                <div class="auth-card">
+                    <div class="auth-card-header">
+                        <h2>Ingresar</h2>
+                    </div>
+
+                <form asp-action="Login" method="post" class="auth-form">
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PasswordHash" class="control-label">Contraseña</label>
+                    <input asp-for="PasswordHash" class="form-control" type="password" />
+                    <span asp-validation-for="PasswordHash" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+                </div>
+            </form>
+
+            </div>
+        </section>
+
+
+
+
+    </main>
