@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GestionDeConsorcios_v2_MVC.Context;
+using Microsoft.AspNetCore.Mvc.Rendering; //agregado para usar SelectList
 
 public class ComunicadosController : Controller
 {
@@ -13,21 +14,41 @@ public class ComunicadosController : Controller
     }
 
     // GET: COMUNICADOS
-    public async Task<IActionResult> Index()    
+    public async Task<IActionResult> Index()
     {
-        return View(await _context.Comunicados.ToListAsync());
+        var rol = HttpContext.Session.GetString("UsuarioRol");
+
+        if (rol != "Administrador")
+        {
+            return RedirectToAction("Login", "Auth");
+        }
+
+        var comunicados = await _context.Comunicados
+            .Include(c => c.Consorcio)
+            .ToListAsync();
+
+        return View(comunicados);
     }
 
     // GET: COMUNICADOS/Details/5
     public async Task<IActionResult> Details(int? id)
     {
+        var rol = HttpContext.Session.GetString("UsuarioRol");
+
+        if (rol != "Administrador")
+        {
+            return RedirectToAction("Login", "Auth");
+        }
+
         if (id == null)
         {
             return NotFound();
         }
 
         var comunicado = await _context.Comunicados
+            .Include(c => c.Consorcio)
             .FirstOrDefaultAsync(m => m.Id == id);
+
         if (comunicado == null)
         {
             return NotFound();
@@ -39,107 +60,116 @@ public class ComunicadosController : Controller
     // GET: COMUNICADOS/Create
     public IActionResult Create()
     {
-        return View();
+        var rol = HttpContext.Session.GetString("UsuarioRol");
+
+        if (rol != "Administrador")
+        {
+            return RedirectToAction("Login", "Auth");
+        }
+
+        ViewBag.Consorcios = new SelectList(_context.Consorcios, "Id", "Nombre");
+
+        return View(new Comunicado
+        {
+            FechaPublicacion = DateTime.Today
+        });
     }
 
     // POST: COMUNICADOS/Create
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,ConsorcioId,Titulo,Mensaje,FechaPublicacion,ArchivoAdjuntoPath,Importante,Consorcio")] Comunicado comunicado)
+    public async Task<IActionResult> Create([Bind("ConsorcioId,Titulo,Mensaje,FechaPublicacion,ArchivoAdjuntoPath,Importante")] Comunicado comunicado)
     {
+        var rol = HttpContext.Session.GetString("UsuarioRol");
+
+        if (rol != "Administrador")
+        {
+            return RedirectToAction("Login", "Auth");
+        }
+
+        ModelState.Remove("Consorcio");
+
         if (ModelState.IsValid)
         {
-            _context.Add(comunicado);
+            _context.Comunicados.Add(comunicado);
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
+
+        ViewBag.Consorcios = new SelectList(_context.Consorcios, "Id", "Nombre", comunicado.ConsorcioId);
         return View(comunicado);
     }
 
     // GET: COMUNICADOS/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
+        var rol = HttpContext.Session.GetString("UsuarioRol");
+
+        if (rol != "Administrador")
+        {
+            return RedirectToAction("Login", "Auth");
+        }
+
         if (id == null)
         {
             return NotFound();
         }
 
         var comunicado = await _context.Comunicados.FindAsync(id);
+
         if (comunicado == null)
         {
             return NotFound();
         }
+
+        ViewBag.Consorcios = new SelectList(_context.Consorcios, "Id", "Nombre", comunicado.ConsorcioId);
+
         return View(comunicado);
     }
 
     // POST: COMUNICADOS/Edit/5
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int? id, [Bind("Id,ConsorcioId,Titulo,Mensaje,FechaPublicacion,ArchivoAdjuntoPath,Importante,Consorcio")] Comunicado comunicado)
+    public async Task<IActionResult> Edit(int id, [Bind("Id,ConsorcioId,Titulo,Mensaje,FechaPublicacion,ArchivoAdjuntoPath,Importante")] Comunicado datos)
     {
-        if (id != comunicado.Id)
+        var rol = HttpContext.Session.GetString("UsuarioRol");
+
+        if (rol != "Administrador")
+        {
+            return RedirectToAction("Login", "Auth");
+        }
+
+        if (id != datos.Id)
         {
             return NotFound();
         }
+
+        ModelState.Remove("Consorcio");
 
         if (ModelState.IsValid)
         {
-            try
+            var comunicado = await _context.Comunicados.FindAsync(id);
+
+            if (comunicado == null)
             {
-                _context.Update(comunicado);
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ComunicadoExists(comunicado.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            comunicado.ConsorcioId = datos.ConsorcioId;
+            comunicado.Titulo = datos.Titulo;
+            comunicado.Mensaje = datos.Mensaje;
+            comunicado.FechaPublicacion = datos.FechaPublicacion;
+            comunicado.ArchivoAdjuntoPath = datos.ArchivoAdjuntoPath;
+            comunicado.Importante = datos.Importante;
+
+            await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
-        return View(comunicado);
-    }
 
-    // GET: COMUNICADOS/Delete/5
-    public async Task<IActionResult> Delete(int? id)
-    {
-        if (id == null)
-        {
-            return NotFound();
-        }
-
-        var comunicado = await _context.Comunicados
-            .FirstOrDefaultAsync(m => m.Id == id);
-        if (comunicado == null)
-        {
-            return NotFound();
-        }
-
-        return View(comunicado);
-    }
-
-    // POST: COMUNICADOS/Delete/5
-    [HttpPost, ActionName("Delete")]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int? id)
-    {
-        var comunicado = await _context.Comunicados.FindAsync(id);
-        if (comunicado != null)
-        {
-            _context.Comunicados.Remove(comunicado);
-        }
-
-        await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Index));
+        ViewBag.Consorcios = new SelectList(_context.Consorcios, "Id", "Nombre", datos.ConsorcioId);
+        return View(datos);
     }
 
     private bool ComunicadoExists(int? id)

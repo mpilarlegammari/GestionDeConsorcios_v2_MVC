@@ -1,66 +1,72 @@
 @model Comunicado
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Crear Comunicado";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Create</h1>
+<section class="page-intro">
+    <div>
+        <h2>Crear Comunicado</h2>
+        <p>Publicar un nuevo comunicado para un consorcio.</p>
+    </div>
+</section>
 
-<h4>Comunicado</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+<div class="card">
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="form-group">
-                <label asp-for="ConsorcioId" class="control-label"></label>
-                <input asp-for="ConsorcioId" class="form-control" />
+            <div class="mb-3">
+                <label asp-for="ConsorcioId" class="form-label">Consorcio</label>
+                <select asp-for="ConsorcioId" class="form-select" asp-items="ViewBag.Consorcios">
+                    <option value="">Seleccione un consorcio</option>
+                </select>
                 <span asp-validation-for="ConsorcioId" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Titulo" class="control-label"></label>
+            <div class="mb-3">
+                <label asp-for="Titulo" class="form-label">Título</label>
                 <input asp-for="Titulo" class="form-control" />
                 <span asp-validation-for="Titulo" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Mensaje" class="control-label"></label>
-                <input asp-for="Mensaje" class="form-control" />
+            <div class="mb-3">
+                <label asp-for="Mensaje" class="form-label">Mensaje</label>
+                <textarea asp-for="Mensaje" class="form-control" rows="5"></textarea>
                 <span asp-validation-for="Mensaje" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="FechaPublicacion" class="control-label"></label>
-                <input asp-for="FechaPublicacion" class="form-control" />
+            <div class="mb-3">
+                <label asp-for="FechaPublicacion" class="form-label">Fecha de publicación</label>
+                <input asp-for="FechaPublicacion" type="date" class="form-control" />
                 <span asp-validation-for="FechaPublicacion" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="ArchivoAdjuntoPath" class="control-label"></label>
-                <input asp-for="ArchivoAdjuntoPath" class="form-control" />
+            <div class="mb-3">
+                <label asp-for="ArchivoAdjuntoPath" class="form-label">Archivo adjunto</label>
+                <input asp-for="ArchivoAdjuntoPath" class="form-control" placeholder="Opcional: nombre o ruta del archivo" />
                 <span asp-validation-for="ArchivoAdjuntoPath" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Importante" class="control-label"></label>
+            <div class="form-check mb-3">
                 <input asp-for="Importante" class="form-check-input" />
+                <label asp-for="Importante" class="form-check-label">Marcar como importante</label>
                 <span asp-validation-for="Importante" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Consorcio" class="control-label"></label>
-                <input asp-for="Consorcio" class="form-control" />
-                <span asp-validation-for="Consorcio" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div class="mt-3">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a asp-action="Index" class="btn btn-secondary">Volver al listado</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

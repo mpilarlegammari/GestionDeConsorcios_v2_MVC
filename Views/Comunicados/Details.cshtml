@@ -1,66 +1,69 @@
 @model Comunicado
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalles de Comunicado";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Details</h1>
+<section class="page-intro">
+    <div>
+        <h2>Detalles de Comunicado</h2>
+        <p>Información registrada sobre el comunicado.</p>
+    </div>
+</section>
 
-<div>
-    <h4>Comunicado</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ConsorcioId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ConsorcioId)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Titulo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Titulo)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Mensaje)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Mensaje)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaPublicacion)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaPublicacion)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ArchivoAdjuntoPath)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ArchivoAdjuntoPath)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Importante)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Importante)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Consorcio)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Consorcio)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="card">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Título</dt>
+            <dd class="col-sm-9">@Model.Titulo</dd>
+
+            <dt class="col-sm-3">Mensaje</dt>
+            <dd class="col-sm-9">@Model.Mensaje</dd>
+
+            <dt class="col-sm-3">Fecha de publicación</dt>
+            <dd class="col-sm-9">@Model.FechaPublicacion.ToShortDateString()</dd>
+
+            <dt class="col-sm-3">Archivo adjunto</dt>
+            <dd class="col-sm-9">
+                @if (!string.IsNullOrEmpty(Model.ArchivoAdjuntoPath))
+                {
+                    @Model.ArchivoAdjuntoPath
+                }
+                else
+                {
+                    <span>-</span>
+                }
+            </dd>
+
+            <dt class="col-sm-3">Importante</dt>
+            <dd class="col-sm-9">
+                @if (Model.Importante)
+                {
+                    <span>Sí</span>
+                }
+                else
+                {
+                    <span>No</span>
+                }
+            </dd>
+
+            <dt class="col-sm-3">Consorcio</dt>
+            <dd class="col-sm-9">
+                @if (Model.Consorcio != null)
+                {
+                    @Model.Consorcio.Nombre
+                }
+                else
+                {
+                    <span>-</span>
+                }
+            </dd>
+        </dl>
+
+        <div class="mt-3">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>
+            <a asp-action="Index" class="btn btn-secondary">Volver al listado</a>
+        </div>
+    </div>
 </div>

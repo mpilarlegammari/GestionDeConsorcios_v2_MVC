@@ -1,71 +1,61 @@
 @model IEnumerable<Comunicado>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Comunicados";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Index</h1>
+<section class="page-intro">
+    <div>
+        <h2>Comunicados</h2>
+        <p>Gestión de comunicados publicados para los consorcios.</p>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+    <a class="btn btn-primary" asp-action="Create">Crear Comunicado</a>
+</section>
+
+<table class="table table-clean">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ConsorcioId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Titulo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Mensaje)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FechaPublicacion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ArchivoAdjuntoPath)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Importante)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Consorcio)
-            </th>
-            <th></th>
+            <th>Título</th>
+            <th>Fecha de publicación</th>
+            <th>Consorcio</th>
+            <th>Importante</th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(model => item.ConsorcioId)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Titulo)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Mensaje)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.FechaPublicacion)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.ArchivoAdjuntoPath)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Importante)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Consorcio)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Titulo</td>
+                <td>@item.FechaPublicacion.ToShortDateString()</td>
+                <td>
+                    @if (item.Consorcio != null)
+                    {
+                        @item.Consorcio.Nombre
+                    }
+                    else
+                    {
+                        <span>-</span>
+                    }
+                </td>
+                <td>
+                    @if (item.Importante)
+                    {
+                        <span>Sí</span>
+                    }
+                    else
+                    {
+                        <span>No</span>
+                    }
+                </td>
+                <td class="table-actions">
+                    <a asp-action="Details" asp-route-id="@item.Id">Detalles</a>
+                    <span>|</span>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
