@@ -1,0 +1,47 @@
+@model IEnumerable<GestionDeConsorcios_v2_MVC.Models.ViewModels.ExpensaPeriodoRowViewModel>
+
+@{
+    ViewData["Title"] = "Resumen de Expensas por Período";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h3>Resumen de Expensas por Período</h3>
+
+<section class="page-intro">
+    <div>
+        <h2>Expensas</h2>
+        <p>Registro y consulta de expensas.</p>
+    </div>
+
+
+        <a class="btn btn-primary" asp-action="Generar">Generar Expensas</a>
+</section>
+
+
+<table class="table table-clean">
+    <thead>
+        <tr>
+            <th>Consorcio</th>
+            <th>Período</th>
+            <th class="text-end">Monto Total</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach(var r in Model)
+    {
+        <tr>
+            <td>@r.ConsorcioNombre</td>
+            <td>@r.Periodo</td>
+            <td class="text-end">@r.MontoTotal.ToString("C")</td>
+            <td>
+                    @* Usar Url.Action para generar la URL y evitar problemas de encoding/route. *@
+                    <a class="table-actions"
+                       href="@Url.Action("DetalleExpensa", "Expensas", new { consorcioId = r.ConsorcioId, periodo = r.Periodo })">
+                        Detalles
+                    </a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

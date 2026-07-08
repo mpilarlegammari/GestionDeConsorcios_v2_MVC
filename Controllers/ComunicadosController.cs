@@ -18,14 +18,45 @@ public class ComunicadosController : Controller
     {
         var rol = HttpContext.Session.GetString("UsuarioRol");
 
-        if (rol != "Administrador")
+        if (rol == "Administrador")
         {
-            return RedirectToAction("Login", "Auth");
+            return RedirectToAction("IndexAdmin", "Comunicados");
         }
 
+        if (rol == "Propietario")
+        {
+            return RedirectToAction("IndexPropietario", "Comunicados");
+        }
+
+        return RedirectToAction("Login", "Auth");
+    }
+
+    public async Task<IActionResult> IndexPropietario()
+    {
+        int? unidadFuncionalId = HttpContext.Session.GetInt32("UnidadFuncionalId");
+
+        if (unidadFuncionalId == null)
+            return RedirectToAction("Login", "Auth");
+
+        var consorcioId = await _context.UnidadesFuncionales
+        .Where(u => u.Id == unidadFuncionalId)
+        .Select(u => u.ConsorcioId)
+         .FirstOrDefaultAsync();
+
+
         var comunicados = await _context.Comunicados
+            .Where(com => com.ConsorcioId == consorcioId)
             .Include(c => c.Consorcio)
             .ToListAsync();
+
+        return View(comunicados);
+    }
+
+    public async Task<IActionResult> IndexAdmin()
+    {
+        var comunicados = await _context.Comunicados
+        .Include(c => c.Consorcio)
+        .ToListAsync();
 
         return View(comunicados);
     }
@@ -33,14 +64,7 @@ public class ComunicadosController : Controller
     // GET: COMUNICADOS/Details/5
     public async Task<IActionResult> Details(int? id)
     {
-        var rol = HttpContext.Session.GetString("UsuarioRol");
-
-        if (rol != "Administrador")
-        {
-            return RedirectToAction("Login", "Auth");
-        }
-
-        if (id == null)
+                if (id == null)
         {
             return NotFound();
         }

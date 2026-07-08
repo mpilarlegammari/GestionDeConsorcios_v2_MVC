@@ -2,7 +2,18 @@
 
 @{
     ViewData["Title"] = "Detalles de Comunicado";
-    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    var rol = Context.Session.GetString("UsuarioRol");
+
+    if (rol == "Administrador")
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_LayoutPropietario.cshtml";
+    }
+
 }
 
 <section class="page-intro">
@@ -62,8 +73,16 @@
         </dl>
 
         <div class="mt-3">
+            @if (rol == "Administrador")
+            {
             <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>
-            <a asp-action="Index" class="btn btn-secondary">Volver al listado</a>
+            <a asp-action="IndexAdmin" class="btn btn-secondary">Volver al listado</a>
+            }
+            else{
+
+            <a asp-action="IndexPropietario" class="btn btn-secondary">Volver al listado</a>
+            }
+
         </div>
     </div>
 </div>

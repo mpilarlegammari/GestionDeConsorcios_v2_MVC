@@ -1,0 +1,57 @@
+@model IEnumerable<Comunicado>
+
+@{
+    ViewData["Title"] = "Comunicados";
+    Layout = "~/Views/Shared/_LayoutPropietario.cshtml";
+}
+
+<section class="page-intro">
+    <div>
+        <h2>Comunicados</h2>
+    </div>
+
+</section>
+
+<table class="table table-clean">
+    <thead>
+        <tr>
+            <th>Título</th>
+            <th>Fecha de publicación</th>
+            <th>Consorcio</th>
+            <th>Importante</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Titulo</td>
+                <td>@item.FechaPublicacion.ToShortDateString()</td>
+                <td>
+                    @if (item.Consorcio != null)
+                    {
+                        @item.Consorcio.Nombre
+                    }
+                    else
+                    {
+                        <span>-</span>
+                    }
+                </td>
+                <td>
+                    @if (item.Importante)
+                    {
+                        <span>Sí</span>
+                    }
+                    else
+                    {
+                        <span>No</span>
+                    }
+                </td>
+                <td class="table-actions">
+                    <a asp-action="Details" asp-route-id="@item.Id">Detalles</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -56,7 +56,14 @@
                 }
             </dd>
         </dl>
-
+        
+        @if (rol == "Administrador")
+        {
+        <a asp-action="IndexResumen" class="btn btn-secondary">Volver al listado</a>
+        }
+        else
+        {
         <a asp-action="Index" class="btn btn-secondary">Volver al listado</a>
+        }
     </div>
 </div>
