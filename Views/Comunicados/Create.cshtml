@@ -1,0 +1,66 @@
+@model Comunicado
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Comunicado</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="ConsorcioId" class="control-label"></label>
+                <input asp-for="ConsorcioId" class="form-control" />
+                <span asp-validation-for="ConsorcioId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Titulo" class="control-label"></label>
+                <input asp-for="Titulo" class="form-control" />
+                <span asp-validation-for="Titulo" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Mensaje" class="control-label"></label>
+                <input asp-for="Mensaje" class="form-control" />
+                <span asp-validation-for="Mensaje" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="FechaPublicacion" class="control-label"></label>
+                <input asp-for="FechaPublicacion" class="form-control" />
+                <span asp-validation-for="FechaPublicacion" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ArchivoAdjuntoPath" class="control-label"></label>
+                <input asp-for="ArchivoAdjuntoPath" class="form-control" />
+                <span asp-validation-for="ArchivoAdjuntoPath" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Importante" class="control-label"></label>
+                <input asp-for="Importante" class="form-check-input" />
+                <span asp-validation-for="Importante" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Consorcio" class="control-label"></label>
+                <input asp-for="Consorcio" class="form-control" />
+                <span asp-validation-for="Consorcio" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
