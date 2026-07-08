@@ -1,0 +1,68 @@
+﻿@{
+    ViewData["Title"] = "Generar Expensas";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<section class="page-intro">
+    <div>
+        <h2>Generar Expensas</h2>
+        <p>Generar automáticamente las expensas de un período para todas las unidades funcionales de un consorcio.</p>
+    </div>
+</section>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+
+<div class="card">
+    <div class="card-body">
+        <form asp-action="Generar" method="post">
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label class="form-label">Consorcio</label>
+                <select name="consorcioId" class="form-select" asp-items="ViewBag.Consorcios">
+                    <option value="">Seleccione un consorcio</option>
+                </select>
+                <span class="text-danger">@Html.ValidationMessage("consorcioId")</span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Período</label>
+                <input name="periodo" type="month" class="form-control" value="@ViewBag.Periodo" />
+                <span class="text-danger">@Html.ValidationMessage("periodo")</span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Fecha de emisión</label>
+                <input name="fechaEmision" type="date" class="form-control" value="@ViewBag.FechaEmision" />
+                <span class="text-danger">@Html.ValidationMessage("fechaEmision")</span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Fecha de vencimiento</label>
+                <input name="fechaVencimiento" type="date" class="form-control" value="@ViewBag.FechaVencimiento" />
+                <span class="text-danger">@Html.ValidationMessage("fechaVencimiento")</span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Observaciones</label>
+                <textarea name="observaciones" class="form-control" rows="3">@ViewBag.Observaciones</textarea>
+            </div>
+
+            <div class="alert alert-info">
+                El sistema buscará los gastos del período seleccionado, los sumará y dividirá el total entre las unidades funcionales del consorcio.
+            </div>
+
+            <div class="mt-3">
+                <button type="submit" class="btn btn-primary">Generar Expensas</button>
+                <a asp-action="Index" class="btn btn-secondary">Volver al listado</a>
+            </div>
+        </form>
+    </div>
+</div>

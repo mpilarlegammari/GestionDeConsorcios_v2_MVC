@@ -2,6 +2,7 @@ using GestionDeConsorcios_v2_MVC.Context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 public class ExpensasController : Controller
 {
@@ -86,6 +87,145 @@ public class ExpensasController : Controller
         return View(expensa);
     }
 
+    // GET: EXPENSAS/Generar
+    public IActionResult Generar()
+    {
+        var rol = HttpContext.Session.GetString("UsuarioRol");
+
+        if (rol != "Administrador")
+        {
+            return RedirectToAction("Login", "Auth");
+        }
+
+        ViewBag.Consorcios = new SelectList(_context.Consorcios, "Id", "Nombre");
+
+        ViewBag.Periodo = DateTime.Today.ToString("yyyy-MM");
+        ViewBag.FechaEmision = DateTime.Today.ToString("yyyy-MM-dd");
+        ViewBag.FechaVencimiento = DateTime.Today.AddDays(10).ToString("yyyy-MM-dd");
+
+        return View();
+    }
+
+    // POST: EXPENSAS/Generar
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Generar(
+        int consorcioId,
+        string periodo,
+        DateTime fechaEmision,
+        DateTime fechaVencimiento,
+        string? observaciones)
+    {
+        var rol = HttpContext.Session.GetString("UsuarioRol");
+
+        if (rol != "Administrador")
+        {
+            return RedirectToAction("Login", "Auth");
+        }
+
+        periodo = periodo?.Trim() ?? string.Empty;
+
+        ViewBag.Consorcios = new SelectList(_context.Consorcios, "Id", "Nombre", consorcioId);
+        ViewBag.Periodo = periodo;
+        ViewBag.FechaEmision = fechaEmision.ToString("yyyy-MM-dd");
+        ViewBag.FechaVencimiento = fechaVencimiento.ToString("yyyy-MM-dd");
+        ViewBag.Observaciones = observaciones;
+
+        if (consorcioId <= 0)
+        {
+            ModelState.AddModelError("consorcioId", "Debe seleccionar un consorcio.");
+        }
+
+        if (string.IsNullOrWhiteSpace(periodo))
+        {
+            ModelState.AddModelError("periodo", "Debe ingresar un período.");
+        }
+
+        if (!DateTime.TryParseExact(periodo, "yyyy-MM", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime fechaPeriodo))
+        {
+            ModelState.AddModelError("periodo", "El período debe tener el formato AAAA-MM. Ejemplo: 2026-03.");
+        }
+
+        if (fechaVencimiento <= fechaEmision)
+        {
+            ModelState.AddModelError("fechaVencimiento", "La fecha de vencimiento debe ser posterior a la fecha de emisión.");
+        }
+
+        var consorcioExiste = await _context.Consorcios.AnyAsync(c => c.Id == consorcioId);
+
+        if (!consorcioExiste)
+        {
+            ModelState.AddModelError("consorcioId", "El consorcio seleccionado no existe.");
+        }
+
+        var unidades = await _context.UnidadesFuncionales
+            .Where(u => u.ConsorcioId == consorcioId)
+            .ToListAsync();
+
+        if (unidades.Count == 0)
+        {
+            ModelState.AddModelError("consorcioId", "El consorcio no tiene unidades funcionales cargadas.");
+        }
+
+        var yaExistenExpensas = await _context.Expensas
+            .Include(e => e.UnidadFuncional)
+            .AnyAsync(e =>
+                e.Periodo == periodo &&
+                e.UnidadFuncional.ConsorcioId == consorcioId);
+
+        if (yaExistenExpensas)
+        {
+            ModelState.AddModelError("periodo", "Ya existen expensas generadas para ese consorcio y período.");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return View();
+        }
+
+        var inicioMes = new DateTime(fechaPeriodo.Year, fechaPeriodo.Month, 1);
+        var finMes = inicioMes.AddMonths(1);
+
+        var gastosDelPeriodo = await _context.Gastos
+            .Where(g =>
+                g.ConsorcioId == consorcioId &&
+                g.Fecha >= inicioMes &&
+                g.Fecha < finMes)
+            .ToListAsync();
+
+        if (gastosDelPeriodo.Count == 0)
+        {
+            ModelState.AddModelError("periodo", "No hay gastos cargados para ese consorcio y período.");
+            return View();
+        }
+
+        var totalGastos = gastosDelPeriodo.Sum(g => g.Monto);
+        var montoPorUnidad = totalGastos / unidades.Count;
+
+        foreach (var unidad in unidades)
+        {
+            var expensa = new Expensa
+            {
+                UnidadFuncionalId = unidad.Id,
+                Periodo = periodo,
+                FechaEmision = fechaEmision,
+                FechaVencimiento = fechaVencimiento,
+                MontoTotal = montoPorUnidad,
+                Estado = EstadoExpensa.Pendiente,
+                Observaciones = observaciones
+            };
+
+            _context.Expensas.Add(expensa);
+        }
+
+        await _context.SaveChangesAsync();
+
+        TempData["Success"] = $"Se generaron {unidades.Count} expensas para el período {periodo}.";
+
+        return RedirectToAction(nameof(Index));
+    }
+    /*
+    //Vieja version para crear expensas manualmente. Se necesita volver a crear el archivo Create.cshtml para que funcione.
     // GET: EXPENSAS/Create
     public IActionResult Create()
     {
@@ -117,7 +257,7 @@ public class ExpensasController : Controller
 
         ViewBag.Unidades = new SelectList(_context.UnidadesFuncionales, "Id", "NumeroUF", expensa.UnidadFuncionalId);
         return View(expensa);
-    }
+    }*/
 
     // GET: EXPENSAS/Edit/5
     public async Task<IActionResult> Edit(int? id)
