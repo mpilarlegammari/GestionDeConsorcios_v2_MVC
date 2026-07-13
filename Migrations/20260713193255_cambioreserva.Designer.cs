@@ -4,6 +4,7 @@ using GestionDeConsorcios_v2_MVC.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GestionDeConsorcios_v2_MVC.Migrations
 {
     [DbContext(typeof(GestionDeConsorciosContext))]
-    partial class GestionDeConsorciosContextModelSnapshot : ModelSnapshot
+    [Migration("20260713193255_cambioreserva")]
+    partial class cambioreserva
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -330,6 +333,12 @@ namespace GestionDeConsorcios_v2_MVC.Migrations
 
                     b.Property<DateTime>("FechaReserva")
                         .HasColumnType("datetime2");
+
+                    b.Property<TimeSpan>("HoraFin")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan>("HoraInicio")
+                        .HasColumnType("time");
 
                     b.Property<string>("Observaciones")
                         .HasColumnType("nvarchar(max)");

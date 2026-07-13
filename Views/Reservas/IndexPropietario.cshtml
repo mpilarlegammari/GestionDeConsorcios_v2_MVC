@@ -1,0 +1,58 @@
+@model IEnumerable<Reserva>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutPropietario.cshtml";
+}
+
+<section class="page-intro">
+    <div>
+        <h2>Reservas</h2>
+        <p>Crear y consultar reservas hechas</p>
+    </div>
+    <a class="btn btn-primary" asp-action="Create">Crear reserva</a>
+</section>
+
+
+<table class="table table-clean">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayName("Amenitie")
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaReserva)
+            </th>
+            <th>
+                @Html.DisplayName("Turno")
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Estado)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+                <td>
+                    @item.Amenity.Nombre
+                </td>
+            <td>
+                @Html.DisplayFor(model => item.FechaReserva)
+            </td>
+                <td>
+                    @Html.DisplayFor(model => item.Turno)
+                </td>
+            <td>
+                @Html.DisplayFor(model => item.Estado)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
