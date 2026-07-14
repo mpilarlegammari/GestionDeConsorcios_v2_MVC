@@ -1,58 +1,72 @@
 @model Pago
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Crear Pago";
     Layout = "~/Views/Shared/_LayoutPropietario.cshtml";
 }
 
-<h1>Create</h1>
+<h3>Informar Pago</h3>
 
-<h4>Pago</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md">
         <form asp-action="Create" method="post"
               enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="form-group">
-                <label asp-for="ExpensaId">Expensa</label>
-                <select asp-for="ExpensaId"
-                        asp-items="ViewBag.Expensas"
-                        class="form-control">
-                    <option value="">Seleccione una expensa</option>
-                </select>
-                <span asp-validation-for="ExpensaId" class="text-danger"></span>
+            <div class="row g-3 align-items-start">
+                <div class="col-md">
+                    <div class="form-group">
+                        <label asp-for="ExpensaId">Expensa</label>
+                        <select asp-for="ExpensaId"
+                                asp-items="ViewBag.Expensas"
+                                class="form-control">
+                            <option value="">Seleccione una expensa</option>
+                        </select>
+                        <span asp-validation-for="ExpensaId" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div id="expensa-info" class="alert alert-info d-none mb-0">
+                        <div>
+                            Monto de la expensa:
+                            <strong id="expensa-monto"></strong>
+                        </div>
+                        <div>
+                            Pagado hasta ahora:
+                            <strong id="expensa-pagado"></strong>
+                        </div>
+                        <div>
+                            Saldo pendiente:
+                            <strong id="expensa-saldo"></strong>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="form-group">
-                <label asp-for="FechaPago" class="control-label"></label>
+                <label asp-for="FechaPago" class="control-label">Fecha de pago</label>
                 <input asp-for="FechaPago" type="date"  class="form-control" />
                 <span asp-validation-for="FechaPago" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="MontoPagado" class="control-label"></label>
+                <label asp-for="MontoPagado" class="control-label">Monto</label>
                 <input asp-for="MontoPagado" class="form-control" />
                 <span asp-validation-for="MontoPagado" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="MedioPago" class="control-label"></label>
+                <label asp-for="MedioPago" class="control-label">Medio de Pago</label>
                 <input asp-for="MedioPago" class="form-control" />
                 <span asp-validation-for="MedioPago" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="NumeroOperacion" class="control-label"></label>
+                <label asp-for="NumeroOperacion" class="control-label">Numero de comprobante</label>
                 <input asp-for="NumeroOperacion" class="form-control" />
                 <span asp-validation-for="NumeroOperacion" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="BancoEntidad" class="control-label"></label>
-                <input asp-for="BancoEntidad" class="form-control" />
-                <span asp-validation-for="BancoEntidad" class="text-danger"></span>
             </div>
 
             <div class="form-group">
@@ -83,3 +97,34 @@
 <div>
     <a asp-action="Index">Volver</a>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        const expensasInfo = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.ExpensasInfo));
+        const selectorExpensa = document.getElementById("ExpensaId");
+        const panelExpensa = document.getElementById("expensa-info");
+        const formatoMoneda = new Intl.NumberFormat("es-AR", {
+            style: "currency",
+            currency: "ARS"
+        });
+
+        function mostrarInformacionExpensa() {
+            const informacion = expensasInfo[selectorExpensa.value];
+
+            if (!informacion) {
+                panelExpensa.classList.add("d-none");
+                return;
+            }
+
+            document.getElementById("expensa-monto").textContent = formatoMoneda.format(informacion.monto);
+            document.getElementById("expensa-pagado").textContent = formatoMoneda.format(informacion.pagado);
+            document.getElementById("expensa-saldo").textContent = formatoMoneda.format(informacion.saldo);
+            panelExpensa.classList.remove("d-none");
+        }
+
+        selectorExpensa.addEventListener("change", mostrarInformacionExpensa);
+        mostrarInformacionExpensa();
+    </script>
+}

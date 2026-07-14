@@ -216,7 +216,7 @@ public class PagosController : Controller
         {
             ModelState.AddModelError(
                 nameof(pago.ExpensaId),
-                "La expensa seleccionada no es v·lida.");
+                "La expensa seleccionada no es v√°lida.");
         }
 
         if (ModelState.IsValid)
@@ -251,14 +251,31 @@ public class PagosController : Controller
         var expensas = await _context.Expensas
             .Where(e => e.UnidadFuncionalId == unidadFuncionalId)
             .OrderByDescending(e => e.FechaEmision)
+            .Select(e => new
+            {
+                e.Id,
+                e.Periodo,
+                e.MontoTotal,
+                Pagado = e.Pagos
+                    .Where(p => p.Estado == EstadoPago.Aprobado)
+                    .Sum(p => (decimal?)p.MontoPagado) ?? 0
+            })
             .ToListAsync();
 
         ViewBag.Expensas = new SelectList(
             expensas,
             "Id",
             "Periodo",
-            seleccionada
-        );
+            seleccionada);
+
+        ViewBag.ExpensasInfo = expensas.ToDictionary(
+            e => e.Id,
+            e => new
+            {
+                monto = e.MontoTotal,
+                pagado = e.Pagado,
+                saldo = Math.Max(e.MontoTotal - e.Pagado, 0)
+            });
     }
 
 
@@ -306,7 +323,7 @@ public class PagosController : Controller
             e.UnidadFuncionalId == ufId.Value);
 
         if (!expensaValida)
-            ModelState.AddModelError("ExpensaId", "La expensa seleccionada no es v·lida.");
+            ModelState.AddModelError("ExpensaId", "La expensa seleccionada no es v√°lida.");
 
         if (ModelState.IsValid)
         {

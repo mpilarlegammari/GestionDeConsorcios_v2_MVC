@@ -27,10 +27,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Direccion)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UnidadesFuncionales)
-            </th>
-            <th></th>
+            <th>@Html.DisplayName("Acciones")</th>
         </tr>
     </thead>
     <tbody>
@@ -42,13 +39,13 @@
             <td>
                 @Html.DisplayFor(model => item.Direccion)
             </td>
-            <td>
-                @Html.DisplayFor(model => item.UnidadesFuncionales)
-            </td>
-                <td class="table-actions">
+
+                <td>
+                    <div class="table-actions">
                 <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Ver detalle</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
+                    </div>
             </td>
         </tr>
 }

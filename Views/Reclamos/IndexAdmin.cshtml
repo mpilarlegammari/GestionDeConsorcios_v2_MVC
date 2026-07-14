@@ -46,9 +46,11 @@ else
                 @Html.DisplayNameFor(model => model.Estado)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FechaCreacion)
+                    @Html.DisplayName("Fecha")
             </th>
-            <th></th>
+            <th>
+                    @Html.DisplayName("Acciones")
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -74,15 +76,17 @@ else
                 @Html.DisplayFor(model => item.Estado)
             </td>
             <td>
-                @Html.DisplayFor(model => item.FechaCreacion)
+                        @item.FechaCreacion.ToString("dd/MM/yyyy")
             </td>
 
             <td>
+                        <div class="table-actions">
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </div>
                     </td>                
-
+                    
             </tr>
 }
     </tbody>

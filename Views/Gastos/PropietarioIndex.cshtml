@@ -24,7 +24,7 @@ else
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.NumeroFactura)
+                @Html.DisplayName("Numero de factura")
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Fecha)
@@ -44,7 +44,9 @@ else
             <th>
                 @Html.DisplayNameFor(model => model.Descripcion)
             </th>
-            <th></th>
+            <th>
+                    @Html.DisplayName("Acciones")
+            </th>
         </tr>
     </thead>
     <tbody>

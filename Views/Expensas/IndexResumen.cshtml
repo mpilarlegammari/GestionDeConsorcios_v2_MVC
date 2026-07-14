@@ -30,7 +30,7 @@ else
             <th>Consorcio</th>
             <th>Período</th>
             <th class="text-end">Monto Total</th>
-            <th></th>
+                <th>@Html.DisplayName("Acciones")</th>
         </tr>
     </thead>
     <tbody>
@@ -41,11 +41,13 @@ else
             <td>@r.Periodo</td>
             <td class="text-end">@r.MontoTotal.ToString("C")</td>
             <td>
-                    @* Usar Url.Action para generar la URL y evitar problemas de encoding/route. *@
-                    <a class="table-actions"
+                        
+                            <div class="table-actions">
+                    <a
                        href="@Url.Action("DetalleExpensa", "Expensas", new { consorcioId = r.ConsorcioId, periodo = r.Periodo })">
                         Detalles
                     </a>
+                        </div>
             </td>
         </tr>
     }
