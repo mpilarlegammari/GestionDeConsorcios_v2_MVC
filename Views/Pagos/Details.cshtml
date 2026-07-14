@@ -97,12 +97,13 @@
         {
             <form asp-action="Aprobar" asp-route-id="@Model.Id" method="post" class="d-inline">
                 @Html.AntiForgeryToken()
-                <button type="submit" class="btn btn-success">Aprobar</button>
+                <button type="submit" class="btn btn-success" onclick="return confirm('¿Desea aprobar este pago?');">Aprobar</button>
+
             </form>
 
             <form asp-action="Rechazar" asp-route-id="@Model.Id" method="post" class="d-inline">
                 @Html.AntiForgeryToken()
-                <button type="submit" class="btn btn-danger">Rechazar</button>
+                <button type="submit" class="btn btn-danger" onclick="return confirm('¿Desea rechazar este pago?');">Rechazar</button>
             </form>
         }
 

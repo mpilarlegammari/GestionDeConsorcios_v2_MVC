@@ -44,9 +44,9 @@ else
             <th>
                 @Html.DisplayNameFor(model => model.Descripcion)
             </th>
-            <th>
+           @* <th>
                     @Html.DisplayName("Acciones")
-            </th>
+            </th>*@
         </tr>
     </thead>
     <tbody>
@@ -84,14 +84,14 @@ else
             </td>
             <td>
                 @Html.DisplayFor(model => item.Descripcion)
-                        <td>
+                        @*<td>
                             <div class="table-actions">
                                 <a asp-action="Details"
                                    asp-route-id="@item.Id">
                                     Detalles
                                 </a>
                             </div>
-                        </td>
+                        </td>*@
         </tr>
 }
     </tbody>
