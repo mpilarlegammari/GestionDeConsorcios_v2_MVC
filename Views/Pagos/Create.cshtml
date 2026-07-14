@@ -11,7 +11,8 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" method="post"
+              enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="form-group">
@@ -26,7 +27,7 @@
 
             <div class="form-group">
                 <label asp-for="FechaPago" class="control-label"></label>
-                <input asp-for="FechaPago" class="form-control" />
+                <input asp-for="FechaPago" type="date"  class="form-control" />
                 <span asp-validation-for="FechaPago" class="text-danger"></span>
             </div>
 
@@ -55,9 +56,15 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="ComprobantePath" class="control-label"></label>
-                <input asp-for="ComprobantePath" class="form-control" />
-                <span asp-validation-for="ComprobantePath" class="text-danger"></span>
+                <label for="comprobante" class="control-label">
+                    Adjuntar comprobante
+                </label>
+
+                <input type="file"
+                       id="comprobante"
+                       name="comprobante"
+                       class="form-control"
+                       accept=".pdf,.jpg,.jpeg,.png" />
             </div>
 
             <div class="form-group">

@@ -19,14 +19,8 @@
 {
     <div class="alert alert-info">No hay datos para mostrar.</div>
 }
-else
-{
-@if (Model == null || !Model.Any())
-{
-    <div class="alert alert-info">No hay datos para mostrar.</div>
-}
-else
-{
+else{
+
     <table class="table table-clean">
     <thead>
         <tr>
@@ -51,6 +45,7 @@ else
             <th>
                 @Html.DisplayNameFor(model => model.Comentarios)
             </th>
+            <th>Comprobante</th>
 
             <th>Acciones</th>
         </tr>
@@ -79,10 +74,30 @@ else
             <td>
                 @Html.DisplayFor(model => item.Comentarios)
             </td>
+                <td>
+                    @if (!string.IsNullOrWhiteSpace(item.ComprobantePath))
+                    {
+                        <a href="@Url.Content(item.ComprobantePath)"
+                           target="_blank"
+                           rel="noopener"
+                           class="btn btn-sm btn-outline-primary">
+                            Ver comprobante
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="text-muted">Sin comprobante</span>
+                    }
+                </td>
 
-            <td class="table-actions">
-                <a asp-action="Details" asp-route-id="@item.Id">Detalles</a>
-            </td>
+                    <td>
+                        <div class="table-actions">
+                            <a asp-action="Details"
+                               asp-route-id="@item.Id">
+                                Detalles
+                            </a>
+                        </div>
+                    </td>
         </tr>
 }
     </tbody>

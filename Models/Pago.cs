@@ -9,6 +9,7 @@ public class Pago
     public string MedioPago { get; set; } = string.Empty;
     public string? NumeroOperacion { get; set; }
     public string? BancoEntidad { get; set; }
+    [ValidateNever]
     public string ComprobantePath { get; set; } = string.Empty;
     public string? Comentarios { get; set; }
     public EstadoPago Estado { get; set; } = EstadoPago.Aprobado;

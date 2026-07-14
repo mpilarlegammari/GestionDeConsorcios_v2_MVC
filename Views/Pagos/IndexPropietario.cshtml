@@ -26,13 +26,13 @@ else
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.FechaPago)
+                @Html.DisplayName("Fecha")
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.MontoPagado)
+                    @Html.DisplayName("Monto")
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.MedioPago)
+                    @Html.DisplayName("Medio de pago")
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Estado)
@@ -40,7 +40,7 @@ else
             <th>
                 @Html.DisplayNameFor(model => model.Comentarios)
             </th>
-
+                <th>Comprobante</th>
             <th>Acciones</th>
         </tr>
     </thead>
@@ -48,7 +48,7 @@ else
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(model => item.FechaPago)
+                        @item.FechaPago.ToString("dd/MM/yyyy")
             </td>
             <td>
                 @Html.DisplayFor(model => item.MontoPagado)
@@ -62,9 +62,25 @@ else
             <td>
                 @Html.DisplayFor(model => item.Comentarios)
             </td>
-
-            <td class="table-actions">
+                    <td>
+                        @if (!string.IsNullOrWhiteSpace(item.ComprobantePath))
+                        {
+                            <a href="@Url.Content(item.ComprobantePath)"
+                               target="_blank"
+                               rel="noopener"
+                               class="btn btn-sm btn-outline-primary">
+                                Ver comprobante
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Sin comprobante</span>
+                        }
+                    </td>
+                    <td>
+                        <div class="table-actions">
                 <a asp-action="Details" asp-route-id="@item.Id">Detalles</a>
+                        </div>
             </td>
         </tr>
 }

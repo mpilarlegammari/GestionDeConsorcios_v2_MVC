@@ -82,10 +82,14 @@ else
             </td>
             <td>
                 @Html.DisplayFor(model => item.Descripcion)
-            </td>
-                <td class="table-actions">
-                <a asp-action="Details" asp-route-id="@item.Id">Detalles</a> |
-            </td>
+                        <td>
+                            <div class="table-actions">
+                                <a asp-action="Details"
+                                   asp-route-id="@item.Id">
+                                    Detalles
+                                </a>
+                            </div>
+                        </td>
         </tr>
 }
     </tbody>

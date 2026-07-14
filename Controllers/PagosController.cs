@@ -6,10 +6,14 @@ using GestionDeConsorcios_v2_MVC.Context;
 public class PagosController : Controller
 {
     private readonly GestionDeConsorciosContext _context;
+    private readonly IWebHostEnvironment _environment;
 
-    public PagosController(GestionDeConsorciosContext context)
+    public PagosController(
+        GestionDeConsorciosContext context,
+        IWebHostEnvironment environment)
     {
         _context = context;
+        _environment = environment;
     }
 
     // GET: PAGOS
@@ -194,22 +198,35 @@ public class PagosController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
-    [Bind("ExpensaId,FechaPago,MontoPagado,MedioPago,NumeroOperacion,BancoEntidad,ComprobantePath,Comentarios")]
-    Pago pago)
+    [Bind("ExpensaId,FechaPago,MontoPagado,MedioPago,NumeroOperacion,BancoEntidad,Comentarios")]
+    Pago pago,
+    IFormFile? comprobante)
     {
-        int? ufId = HttpContext.Session.GetInt32("UnidadFuncionalId");
+        int? ufId =
+            HttpContext.Session.GetInt32("UnidadFuncionalId");
 
         if (ufId == null)
             return RedirectToAction("Login", "Auth");
+
         bool expensaValida = await _context.Expensas.AnyAsync(e =>
             e.Id == pago.ExpensaId &&
             e.UnidadFuncionalId == ufId.Value);
 
         if (!expensaValida)
-            ModelState.AddModelError("ExpensaId", "La expensa seleccionada no es válida.");
+        {
+            ModelState.AddModelError(
+                nameof(pago.ExpensaId),
+                "La expensa seleccionada no es válida.");
+        }
 
         if (ModelState.IsValid)
         {
+            if (comprobante != null && comprobante.Length > 0)
+            {
+                pago.ComprobantePath =
+                    await GuardarArchivoAsync(comprobante);
+            }
+
             pago.UnidadFuncionalId = ufId.Value;
             pago.FechaCreacion = DateTime.UtcNow;
             pago.Estado = EstadoPago.PendienteRevision;
@@ -220,7 +237,10 @@ public class PagosController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        await CargarExpensasAsync(ufId.Value, pago.ExpensaId);
+        await CargarExpensasAsync(
+            ufId.Value,
+            pago.ExpensaId);
+
         return View(pago);
     }
 
@@ -343,5 +363,25 @@ public class PagosController : Controller
     private bool PagoExists(int? id)
     {
         return _context.Pagos.Any(e => e.Id == id);
+    }
+
+    private async Task<string> GuardarArchivoAsync(IFormFile archivo)
+    {
+        var carpeta = Path.Combine(
+            _environment.WebRootPath,
+            "uploads");
+
+        Directory.CreateDirectory(carpeta);
+
+        var extension = Path.GetExtension(archivo.FileName);
+        var nombreArchivo = $"{Guid.NewGuid()}{extension}";
+        var rutaFisica = Path.Combine(carpeta, nombreArchivo);
+
+        await using var stream =
+            new FileStream(rutaFisica, FileMode.Create);
+
+        await archivo.CopyToAsync(stream);
+
+        return $"/uploads/{nombreArchivo}";
     }
 }
