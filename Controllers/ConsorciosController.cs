@@ -52,6 +52,21 @@ public class ConsorciosController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("Id,Nombre,Cuit,Direccion,Ciudad,CodigoPostal,CantidadPisos,Observaciones,Estado,FechaCreacion,UnidadesFuncionales,Amenities")] Consorcio consorcio)
     {
+        if (consorcio.UnidadesFuncionales != null)
+        {
+            for (int i = 0; i < consorcio.UnidadesFuncionales.Count; i++)
+            {
+                var uf = consorcio.UnidadesFuncionales[i];
+
+                if (await EmailEnUsoAsync(uf.MailPropietario))
+                {
+                    ModelState.AddModelError(
+                        $"UnidadesFuncionales[{i}].MailPropietario",
+                        "Ya existe un usuario registrado con ese correo.");
+                }
+            }
+        }
+
         if (ModelState.IsValid)
         {
             if (consorcio.UnidadesFuncionales != null)
@@ -59,7 +74,9 @@ public class ConsorciosController : Controller
                 foreach (var uf in consorcio.UnidadesFuncionales)
                 {
                     uf.Consorcio = consorcio;
+                    uf.Usuario = CrearUsuarioParaUf(uf);
                 }
+
             }
             if (consorcio.Amenities != null)
             {
@@ -260,5 +277,41 @@ public class ConsorciosController : Controller
     private bool ConsorcioExists(int? id)
     {
         return _context.Consorcios.Any(e => e.Id == id);
+    }
+
+    private Usuario CrearUsuarioParaUf(UnidadFuncional uf)
+    {
+        return new Usuario
+        {
+            Nombre = uf.NombrePropietario,
+            Apellido = string.Empty,
+            Email = uf.MailPropietario.Trim().ToLower(),
+            PasswordHash = uf.DniPropietario,
+            Rol = RolUsuario.Propietario,
+            Activo = true,
+            FechaCreacion = DateTime.UtcNow
+        };
+    }
+
+    private void ActualizarUsuarioDeUf(
+        Usuario usuario,
+        UnidadFuncional uf)
+    {
+        usuario.Nombre = uf.NombrePropietario;
+        usuario.Email = uf.MailPropietario.Trim().ToLower();
+        usuario.PasswordHash = uf.DniPropietario;
+        usuario.Activo = uf.Estado != EstadoUnidadFuncional.Inactiva;
+    }
+
+    private Task<bool> EmailEnUsoAsync(
+        string email,
+        int? usuarioActualId = null)
+    {
+        email = email.Trim().ToLower();
+
+        return _context.Usuarios.AnyAsync(u =>
+            u.Email == email &&
+            (!usuarioActualId.HasValue ||
+             u.Id != usuarioActualId.Value));
     }
 }

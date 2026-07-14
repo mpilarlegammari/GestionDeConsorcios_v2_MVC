@@ -47,6 +47,7 @@ public class ComunicadosController : Controller
         var comunicados = await _context.Comunicados
             .Where(com => com.ConsorcioId == consorcioId)
             .Include(c => c.Consorcio)
+            .OrderDescending()
             .ToListAsync();
 
         return View(comunicados);
@@ -56,6 +57,7 @@ public class ComunicadosController : Controller
     {
         var comunicados = await _context.Comunicados
         .Include(c => c.Consorcio)
+        .OrderDescending()
         .ToListAsync();
 
         return View(comunicados);

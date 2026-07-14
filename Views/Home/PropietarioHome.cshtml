@@ -1,6 +1,12 @@
 ﻿@{
 ViewData["Title"] = "Propietario Home Page";
     Layout = "~/Views/Shared/_LayoutPropietario.cshtml";
+    var proximaExpensa = ViewBag.ProximaExpensa as Expensa;
+    var proximaReserva = ViewBag.ProximaReserva as Reserva;
+
+    var comunicados =
+        ViewBag.UltimosComunicados as List<Comunicado>
+        ?? new List<Comunicado>();
 }
 
 <div class="card shadow-sm">
@@ -19,6 +25,122 @@ ViewData["Title"] = "Propietario Home Page";
             <div class="alert alert-success">
                 La unidad funcional no registra deuda.
             </div>
+        }
+    </div>
+</div>
+
+<div class="row g-3 mt-2">
+
+    <div class="col-md-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5>Reclamos activos</h5>
+                <h2>@ViewBag.ReclamosActivos</h2>
+
+                <a asp-controller="Reclamos"
+                   asp-action="Index"
+                   class="btn btn-outline-primary">
+                    Ver reclamos
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5>Próximo vencimiento</h5>
+
+                @if (proximaExpensa != null)
+                {
+                    <p class="mb-1">
+                        Período: <strong>@proximaExpensa.Periodo</strong>
+                    </p>
+
+                    <p class="mb-1">
+                        Vence:
+                        <strong>
+                            @proximaExpensa.FechaVencimiento.ToString("dd/MM/yyyy")
+                        </strong>
+                    </p>
+
+                    <p>
+                        Importe:
+                        <strong>@proximaExpensa.MontoTotal.ToString("C")</strong>
+                    </p>
+                }
+                else
+                {
+                    <p class="text-muted">
+                        No hay próximos vencimientos.
+                    </p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card shadow-sm mt-3">
+    <div class="card-body">
+        <h5>Próxima reserva</h5>
+
+        @if (proximaReserva != null)
+        {
+            <p>
+                <strong>@proximaReserva.Amenity.Nombre</strong><br />
+                @proximaReserva.FechaReserva.ToString("dd/MM/yyyy") —
+                @proximaReserva.Turno<br />
+                Estado: @proximaReserva.Estado
+            </p>
+
+            <a asp-controller="Reservas"
+               asp-action="Index"
+               class="btn btn-outline-primary">
+                Ver reservas
+            </a>
+        }
+        else
+        {
+            <p class="text-muted">
+                No tenés reservas próximas.
+            </p>
+        }
+    </div>
+</div>
+<div class="card shadow-sm mt-3">
+    <div class="card-body">
+        <h5>Últimos comunicados</h5>
+
+        @if (comunicados.Any())
+        {
+            <div class="list-group list-group-flush">
+                @foreach (var comunicado in comunicados)
+                {
+                    <a asp-controller="Comunicados"
+                       asp-action="Details"
+                       asp-route-id="@comunicado.Id"
+                       class="list-group-item list-group-item-action">
+
+                        @if (comunicado.Importante)
+                        {
+                            <span class="badge bg-danger me-2">
+                                Importante
+                            </span>
+                        }
+
+                        <strong>@comunicado.Titulo</strong>
+
+                        <small class="d-block text-muted">
+                            @comunicado.FechaPublicacion.ToString("dd/MM/yyyy")
+                        </small>
+                    </a>
+                }
+            </div>
+        }
+        else
+        {
+            <p class="text-muted">
+                No hay comunicados recientes.
+            </p>
         }
     </div>
 </div>

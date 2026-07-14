@@ -65,8 +65,17 @@ namespace GestionDeConsorcios_v2_MVC.Controllers
             if (ufId == null)
                 return RedirectToAction("Login", "Auth");
 
+            var uf = await _context.UnidadesFuncionales
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Id == ufId.Value);
+
+            if (uf == null)
+                return RedirectToAction("Login", "Auth");
+
+            var hoy = DateTime.Today;
+
             decimal totalExpensas = await _context.Expensas
-                .Where(e => e.UnidadFuncionalId == ufId.Value && e.FechaVencimiento<DateTime.Today)
+                .Where(e => e.UnidadFuncionalId == ufId.Value && e.FechaEmision < hoy)
                 .SumAsync(e => (decimal?)e.MontoTotal) ?? 0;
 
             decimal totalPagos = await _context.Pagos
@@ -76,12 +85,52 @@ namespace GestionDeConsorcios_v2_MVC.Controllers
                 .SumAsync(p => (decimal?)p.MontoPagado) ?? 0;
 
             decimal saldo = totalExpensas - totalPagos;
-            bool tieneDeuda = saldo > 0;
+
+            var proximaExpensa = await _context.Expensas
+                .Where(e =>
+                    e.UnidadFuncionalId == ufId.Value &&
+                    e.FechaVencimiento >= hoy &&
+                    e.Estado != EstadoExpensa.Pagada)
+                .OrderBy(e => e.FechaVencimiento)
+                .FirstOrDefaultAsync();
+
+            int pagosPendientesRevision = await _context.Pagos
+                .CountAsync(p =>
+                    p.UnidadFuncionalId == ufId.Value &&
+                    p.Estado == EstadoPago.PendienteRevision);
+
+            var proximaReserva = await _context.Reservas
+                .Include(r => r.Amenity)
+                .Where(r =>
+                    r.UnidadFuncionalId == ufId.Value &&
+                    r.FechaReserva >= hoy &&
+                    r.Estado != EstadoReserva.Cancelada &&
+                    r.Estado != EstadoReserva.Rechazada)
+                .OrderBy(r => r.FechaReserva)
+                .FirstOrDefaultAsync();
+
+            int reclamosActivos = await _context.Reclamos
+                .CountAsync(r =>
+                    r.UnidadFuncionalId == ufId.Value &&
+                    r.Estado != EstadoReclamo.Cerrado);
+
+            var ultimosComunicados = await _context.Comunicados
+                .Where(c => c.ConsorcioId == uf.ConsorcioId)
+                .OrderByDescending(c => c.Importante)
+                .ThenByDescending(c => c.FechaPublicacion)
+                .Take(2)
+                .ToListAsync();
 
             ViewBag.TotalExpensas = totalExpensas;
             ViewBag.TotalPagos = totalPagos;
             ViewBag.Saldo = saldo;
-            ViewBag.TieneDeuda = tieneDeuda;
+            ViewBag.TieneDeuda = saldo > 0;
+
+            ViewBag.ProximaExpensa = proximaExpensa;
+            ViewBag.PagosPendientesRevision = pagosPendientesRevision;
+            ViewBag.ProximaReserva = proximaReserva;
+            ViewBag.ReclamosActivos = reclamosActivos;
+            ViewBag.UltimosComunicados = ultimosComunicados;
 
             return View();
         }

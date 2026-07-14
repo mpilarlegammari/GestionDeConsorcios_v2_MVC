@@ -44,7 +44,13 @@
     </div>
 }
 
-<table class="table table-clean">
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info">No hay datos para mostrar.</div>
+}
+else
+{
+    <table class="table table-clean">
     <thead>
         <tr>
             <th>Periodo</th>

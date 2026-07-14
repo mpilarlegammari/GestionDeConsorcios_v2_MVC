@@ -34,6 +34,7 @@ namespace GestionDeConsorcios_v2_MVC.Controllers
                 var expensas = await _context.Expensas
                     .Where(e => e.UnidadFuncionalId == unidadFuncionalId.Value)
                     .Include(e => e.UnidadFuncional)
+                    .OrderDescending()
                     .ToListAsync();
 
                 return View(expensas);
@@ -353,19 +354,18 @@ namespace GestionDeConsorcios_v2_MVC.Controllers
        
         public async Task<IActionResult> DetalleExpensa(int? consorcioId, string periodo)
         {
-            // Incluir relaciones necesarias para mostrar datos en la vista
+
             var query = _context.Expensas
                 .Include(e => e.UnidadFuncional)
                     .ThenInclude(uf => uf.Consorcio)
                 .AsQueryable();
 
-            // Aplicar filtros si vienen por query string (desde IndexResumen)
             if (consorcioId.HasValue)
             {
                 query = query.Where(e => e.UnidadFuncional != null && e.UnidadFuncional.ConsorcioId == consorcioId.Value);
                 ViewBag.FilterConsorcioId = consorcioId.Value;
 
-                // También cargar nombre del consorcio para mostrar en la vista
+
                 var cons = await _context.Consorcios.FindAsync(consorcioId.Value);
                 if (cons != null)
                     ViewBag.FilterConsorcioNombre = cons.Nombre;

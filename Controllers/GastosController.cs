@@ -26,6 +26,7 @@ public class GastosController : Controller
         {        // Incluir el consorcio 
             var gastos = await _context.Gastos
                 .Include(g => g.Consorcio)
+                .OrderDescending()
                 .ToListAsync();
 
             return View("AdminIndex", gastos);
@@ -47,6 +48,7 @@ public class GastosController : Controller
             var gastos = await _context.Gastos
                 .Include(g => g.Consorcio)
                 .Where(g => g.ConsorcioId == consorcioId)
+                .OrderDescending()
                 .ToListAsync();
 
             return View("PropietarioIndex", gastos);
@@ -137,38 +139,58 @@ public class GastosController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int? id, [Bind("Id,ConsorcioId,NumeroFactura,Fecha,Monto,Concepto,Categoria,ArchivoFacturaPath,Descripcion")] Gasto gasto)
+    public async Task<IActionResult> Edit(int? id,[Bind("Id,ConsorcioId,NumeroFactura,Fecha,Monto,Concepto,Categoria,Descripcion")]
+    Gasto datos,
+    IFormFile? archivoFactura)
     {
-        if (id != gasto.Id)
-        {
+        if (id == null || id != datos.Id)
             return NotFound();
+
+        var gasto = await _context.Gastos
+            .FirstOrDefaultAsync(g => g.Id == id.Value);
+
+        if (gasto == null)
+            return NotFound();
+
+        if (FacturaExisteOtroId(datos.NumeroFactura,datos.Id))
+        {
+            ModelState.AddModelError(
+                nameof(datos.NumeroFactura),
+                "El número de factura ya está asociado a otro gasto.");
         }
 
         if (ModelState.IsValid)
         {
-            try
+            gasto.ConsorcioId = datos.ConsorcioId;
+            gasto.NumeroFactura = datos.NumeroFactura;
+            gasto.Fecha = datos.Fecha;
+            gasto.Monto = datos.Monto;
+            gasto.Concepto = datos.Concepto;
+            gasto.Categoria = datos.Categoria;
+            gasto.Descripcion = datos.Descripcion;
+
+
+            if (archivoFactura != null && archivoFactura.Length > 0)
             {
-                _context.Update(gasto);
-                await _context.SaveChangesAsync();
+                gasto.ArchivoFacturaPath =
+                    await GuardarArchivoAsync(archivoFactura);
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!GastoExists(gasto.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
-        // Si hay errores, repoblar la lista para que el dropdown se muestre correctamente
-        ViewBag.Consorcios = new SelectList(_context.Consorcios, "Id", "Nombre", gasto.ConsorcioId);
-        return View(gasto);
-    }
 
+        datos.ArchivoFacturaPath = gasto.ArchivoFacturaPath;
+
+        ViewBag.Consorcios = new SelectList(
+            _context.Consorcios,
+            "Id",
+            "Nombre",
+            datos.ConsorcioId);
+
+        return View(datos);
+    }
     // GET: GASTOS/Delete/5
     public async Task<IActionResult> Delete(int? id)
     {
@@ -209,6 +231,11 @@ public class GastosController : Controller
     private bool FacturaExiste(string factura)
     {
         return _context.Gastos.Any(e => e.NumeroFactura == factura);
+    }
+
+    private bool FacturaExisteOtroId(string factura, int? id)
+    {
+        return _context.Gastos.Any(e => e.NumeroFactura == factura && e.Id != id);
     }
 
     private async Task<string> GuardarArchivoAsync(IFormFile archivo)

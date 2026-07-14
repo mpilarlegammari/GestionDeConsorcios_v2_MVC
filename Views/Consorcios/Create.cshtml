@@ -71,6 +71,8 @@
             <h5>Unidades Funcionales</h5>
 
             <div id="unidades-container">
+                <div class="unidad-item" data-index="0">
+                <input type="hidden" name="UnidadesFuncionales.Index" value="0" />
                 <div class="form-group">
                     <label asp-for="UnidadesFuncionales[0].NumeroUF" class="control-label"></label>
                     <input name="UnidadesFuncionales[0].NumeroUF" class="form-control" />
@@ -116,7 +118,9 @@
                     <span asp-validation-for="UnidadesFuncionales[0].Telefono" class="text-danger"></span>
                 </div>
 
-
+                <button type="button" class="btn btn-sm btn-danger remove-unidad">Quitar unidad</button>
+                <hr />
+                </div>
             </div>
 
             <button type="button" id="agregar-unidad" class="btn btn-secondary">
@@ -126,6 +130,8 @@
             <hr />
             <h5>Amenities:</h5>
             <div id="amenities-container">
+                <div class="amenity-item" data-index="0">
+                <input type="hidden" name="Amenities.Index" value="0" />
                 <div class="form-group">
                     <label class="control-label">Nombre</label>
                     <input name="Amenities[0].Nombre" class="form-control" />
@@ -137,6 +143,9 @@
                 <div class="form-group">
                     <label class="control-label">Capacidad</label>
                     <input name="Amenities[0].Capacidad" type="number" class="form-control" />
+                </div>
+                <button type="button" class="btn btn-sm btn-danger remove-amenity">Quitar amenity</button>
+                <hr />
                 </div>
             </div>
 
@@ -159,7 +168,8 @@
                 document.getElementById('agregar-unidad').addEventListener('click', function () {
                     const container = document.getElementById('unidades-container');
                     const template = `
-                        <hr />
+                        <div class="unidad-item" data-index="${unidadIndex}">
+                        <input type="hidden" name="UnidadesFuncionales.Index" value="${unidadIndex}" />
                         <div class="form-group">
                             <label class="control-label">Número UF</label>
                             <input name="UnidadesFuncionales[${unidadIndex}].NumeroUF" class="form-control" />
@@ -188,6 +198,9 @@
                             <label class="control-label">Teléfono</label>
                             <input name="UnidadesFuncionales[${unidadIndex}].Telefono" class="form-control" />
                         </div>
+                        <button type="button" class="btn btn-sm btn-danger remove-unidad">Quitar unidad</button>
+                        <hr />
+                        </div>
                     `;
                     container.insertAdjacentHTML('beforeend', template);
                     unidadIndex++;
@@ -197,7 +210,8 @@
                 document.getElementById('agregar-amenity').addEventListener('click', function () {
                     const container = document.getElementById('amenities-container');
                     const template = `
-                        <hr />
+                        <div class="amenity-item" data-index="${amenityIndex}">
+                        <input type="hidden" name="Amenities.Index" value="${amenityIndex}" />
                         <div class="form-group">
                             <label class="control-label">Nombre</label>
                             <input name="Amenities[${amenityIndex}].Nombre" class="form-control" />
@@ -210,9 +224,24 @@
                             <label class="control-label">Capacidad</label>
                             <input name="Amenities[${amenityIndex}].Capacidad" type="number" class="form-control" />
                         </div>
+                        <button type="button" class="btn btn-sm btn-danger remove-amenity">Quitar amenity</button>
+                        <hr />
+                        </div>
                     `;
                     container.insertAdjacentHTML('beforeend', template);
                     amenityIndex++;
+                });
+
+                document.addEventListener('click', function (e) {
+                    if (e.target && e.target.classList.contains('remove-unidad')) {
+                        const item = e.target.closest('.unidad-item');
+                        if (item) item.remove();
+                    }
+
+                    if (e.target && e.target.classList.contains('remove-amenity')) {
+                        const item = e.target.closest('.amenity-item');
+                        if (item) item.remove();
+                    }
                 });
             </script>
             }

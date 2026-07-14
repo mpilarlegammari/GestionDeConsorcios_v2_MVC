@@ -42,6 +42,7 @@ public class PagosController : Controller
         .Include(p => p.Expensa)
         .Include(p => p.UnidadFuncional)
                         .ThenInclude(uf => uf.Consorcio)
+                        .OrderDescending()
         .ToListAsync();
 
         return View(pagosAdmin);
@@ -57,6 +58,7 @@ public class PagosController : Controller
             .Where(p => p.UnidadFuncionalId == unidadFuncionalId.Value)
             .Include(p => p.Expensa)
             .Include(p => p.UnidadFuncional)
+            .OrderDescending()
             .ToListAsync();
 
         return View(pagosPropietario);

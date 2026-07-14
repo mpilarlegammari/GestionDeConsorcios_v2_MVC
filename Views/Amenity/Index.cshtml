@@ -9,7 +9,14 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info">No hay datos para mostrar.</div>
+}
+else
+{
+    <table class="table">
     <thead>
         <tr>
             <th>
@@ -68,4 +75,5 @@
         </tr>
 }
     </tbody>
-</table>
+    </table>
+}
