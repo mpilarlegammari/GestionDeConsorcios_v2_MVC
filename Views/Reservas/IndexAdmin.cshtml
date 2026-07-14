@@ -26,7 +26,7 @@
                 @Html.DisplayName("Unidad Funcional")
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FechaReserva)
+                @Html.DisplayName("Fecha reserva")
             </th>
             <th>
                 @Html.DisplayName("Turno")
@@ -50,20 +50,56 @@
                 @Html.DisplayFor(model => item.UnidadFuncionalId)
             </td>
             <td>
-                @Html.DisplayFor(model => item.FechaReserva)
+                    @item.FechaReserva.ToString("dd/MM/yyyy")
             </td>
             <td>
                 @Html.DisplayFor(model => item.Turno)
             </td>
+                <td>
+                    @if (item.Estado == EstadoReserva.Pendiente)
+                    {
+                        <form asp-action="Aprobar"
+                              asp-route-id="@item.Id"
+                              method="post"
+                              class="d-inline">
 
-            <td>
-                @Html.DisplayFor(model => item.Estado)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
+                            <button type="submit"
+                                    class="btn btn-sm btn-warning"
+                                    onclick="return confirm('¿Desea aprobar esta reserva?');">
+                                Aprobar
+                            </button>
+                        </form>
+
+                        <form asp-action="Rechazar"
+                              asp-route-id="@item.Id"
+                              method="post"
+                              class="d-inline">
+
+                            <button type="submit"
+                                    class="btn btn-sm btn-warning"
+                                    onclick="return confirm('¿Desea rechazar esta reserva?');">
+                                Rechazar
+                            </button>
+                        </form>
+                    }
+                    else if (item.Estado == EstadoReserva.Confirmada)
+                    {
+                        <span class="badge bg-success">Aprobada</span>
+                    }
+                    else if (item.Estado == EstadoReserva.Cancelada)
+                    {
+                        <span class="badge bg-secondary">Cancelada</span>
+                    } else
+                    {
+                        <span class="badge bg-danger">Rechazada</span>
+                    }
+
+                    <a asp-action="Details"
+                       asp-route-id="@item.Id"
+                       class="btn btn-sm btn-outline-secondary">
+                        Ver
+                    </a>
+                </td>
         </tr>
 }
     </tbody>

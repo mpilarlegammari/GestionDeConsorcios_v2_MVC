@@ -221,8 +221,5 @@ public class ReclamosController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    private bool ReclamoExists(int? id)
-    {
-        return _context.Reclamos.Any(e => e.Id == id);
-    }
+
 }

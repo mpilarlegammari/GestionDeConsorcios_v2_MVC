@@ -37,43 +37,44 @@
                        asp-controller="Home"
                        asp-action="PropietarioHome">
                         <span class="sidebar-link-icon">⌂</span>
-                        <span>INICIO</span>
+                        <span>Inicio</span>
+                    </a>
+                    <a class="sidebar-link @(currentPath.StartsWith("/Gastos") ? "active" : "")"
+                       asp-controller="Gastos"
+                       asp-action="Index">
+                        <span class="sidebar-link-icon">$</span>
+                        <span>Gastos del consorcio</span>
                     </a>
                     <a class="sidebar-link @(currentPath.StartsWith("/Expensas") ? "active" : "")"
                        asp-controller="Expensas"
                        asp-action="Index">
                         <span class="sidebar-link-icon">#</span>
-                        <span>EXPENSAS</span>
+                        <span>Expensas</span>
                     </a>
                     <a class="sidebar-link @(currentPath.StartsWith("/Pagos") ? "active" : "")"
                        asp-controller="Pagos"
                        asp-action="Index">
-                        <span class="sidebar-link-icon">$</span>
-                        <span>PAGOS</span>
+                        <span class="sidebar-link-icon">₱</span>
+                        <span>Pagos</span>
                     </a>
-                    <a class="sidebar-link @(currentPath.StartsWith("/Gastos") ? "active" : "")"
-                       asp-controller="Gastos"
-                       asp-action="Index">
-                        <span class="sidebar-link-icon">*</span>
-                        <span>GASTOS CONSORCIO</span>
-                    </a>
+
                     <a class="sidebar-link @(currentPath.StartsWith("/Comunicados") ? "active" : "")"
                        asp-controller="Comunicados"
                        asp-action="Index">
                         <span class="sidebar-link-icon">!</span>
-                        <span>COMUNICADOS</span>
+                        <span>Comunicados</span>
                     </a>
                     <a class="sidebar-link @(currentPath.StartsWith("/Reclamos") ? "active" : "")"
                        asp-controller="Reclamos"
                        asp-action="Index">
                         <span class="sidebar-link-icon">?</span>
-                        <span>RECLAMOS</span>
+                        <span>Reclamos</span>
                     </a>
                     <a class="sidebar-link @(currentPath.StartsWith("/Reservas") ? "active" : "")"
                        asp-controller="Reservas"
                        asp-action="Index">
                         <span class="sidebar-link-icon">+</span>
-                        <span>RESERVAS</span>
+                        <span>Reservas</span>
                     </a>
                 </nav>
             </div>

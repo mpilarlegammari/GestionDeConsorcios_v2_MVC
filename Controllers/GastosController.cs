@@ -6,10 +6,14 @@ using Microsoft.EntityFrameworkCore;
 public class GastosController : Controller
 {
     private readonly GestionDeConsorciosContext _context;
+    private readonly IWebHostEnvironment _environment;
 
-    public GastosController(GestionDeConsorciosContext context)
+    public GastosController(
+        GestionDeConsorciosContext context,
+        IWebHostEnvironment environment)
     {
         _context = context;
+        _environment = environment;
     }
 
     // GET: GASTOS
@@ -87,19 +91,19 @@ public class GastosController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(Gasto gasto, IFormFile? archivoFactura)
     {
-        if (ModelState.IsValid)
+
+
+        if (ModelState.IsValid && FacturaExiste(gasto.NumeroFactura)) {
+            ModelState.AddModelError(
+     string.Empty,
+     "El número de factura ya existe asociado a un gasto");
+        }
+
+            if (ModelState.IsValid)
         {
             if (archivoFactura != null && archivoFactura.Length > 0)
             {
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "facturas");
-                Directory.CreateDirectory(uploadsFolder);
-                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(archivoFactura.FileName);
-                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await archivoFactura.CopyToAsync(stream);
-                }
-                gasto.ArchivoFacturaPath = "/facturas/" + uniqueFileName;
+                gasto.ArchivoFacturaPath = await GuardarArchivoAsync(archivoFactura);
             }
             gasto.FechaCreacion = DateTime.UtcNow;
             _context.Add(gasto);
@@ -201,5 +205,24 @@ public class GastosController : Controller
     private bool GastoExists(int? id)
     {
         return _context.Gastos.Any(e => e.Id == id);
+    }
+    private bool FacturaExiste(string factura)
+    {
+        return _context.Gastos.Any(e => e.NumeroFactura == factura);
+    }
+
+    private async Task<string> GuardarArchivoAsync(IFormFile archivo)
+    {
+        var carpeta = Path.Combine(_environment.WebRootPath, "uploads");
+        Directory.CreateDirectory(carpeta);
+
+        var extension = Path.GetExtension(archivo.FileName);
+        var nombreArchivo = $"{Guid.NewGuid()}{extension}";
+        var rutaFisica = Path.Combine(carpeta, nombreArchivo);
+
+        await using var stream = new FileStream(rutaFisica, FileMode.Create);
+        await archivo.CopyToAsync(stream);
+
+        return $"/uploads/{nombreArchivo}";
     }
 }

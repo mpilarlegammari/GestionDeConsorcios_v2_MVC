@@ -48,7 +48,7 @@
                 @Html.DisplayFor(model => item.NumeroFactura)
             </td>
             <td>
-                @Html.DisplayFor(model => item.Fecha)
+                    @item.Fecha.ToString("dd/MM/yyyy")
             </td>
             <td>
                 @Html.DisplayFor(model => item.Monto)
@@ -60,7 +60,19 @@
                 @Html.DisplayFor(model => item.Categoria)
             </td>
             <td>
-                @Html.DisplayFor(model => item.ArchivoFacturaPath)
+                @if (!string.IsNullOrWhiteSpace(item.ArchivoFacturaPath))
+                {
+                    <a href="@Url.Content(item.ArchivoFacturaPath)"
+                       target="_blank"
+                       rel="noopener"
+                       class="btn btn-sm btn-outline-primary">
+                        Ver comprobante
+                    </a>
+                }
+                else
+                {
+                    <span class="text-muted">Sin comprobante</span>
+                }
             </td>
             <td>
                 @Html.DisplayFor(model => item.Descripcion)

@@ -3,7 +3,22 @@ ViewData["Title"] = "Propietario Home Page";
     Layout = "~/Views/Shared/_LayoutPropietario.cshtml";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">PROPIETARIO HOME PAGE</a>.</p>
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h5 class="card-title">Estado de cuenta</h5>
+
+        @if (ViewBag.TieneDeuda == true)
+        {
+            <div class="alert alert-danger">
+                La unidad funcional tiene una deuda de
+                <strong>@(((decimal)ViewBag.Saldo).ToString("C"))</strong>.
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-success">
+                La unidad funcional no registra deuda.
+            </div>
+        }
+    </div>
 </div>

@@ -49,6 +49,7 @@ public class ReservasController : Controller
             .Include(r => r.UnidadFuncional)
                 .ThenInclude(uf => uf.Consorcio)
                 .Include(r => r.Amenity)
+                .OrderDescending()
             .ToListAsync();
         return View(reservas);
 
@@ -59,7 +60,12 @@ public class ReservasController : Controller
         if (unidadFuncionalId == null)
             return RedirectToAction("Login", "Auth");
 
-        var reservas = await _context.Reservas.Include(r => r.UnidadFuncional).Where(r => r.UnidadFuncionalId == unidadFuncionalId.Value).Include(r => r.Amenity).ToListAsync();
+        var reservas = await _context.Reservas
+            .Include(r => r.UnidadFuncional)
+            .Where(r => r.UnidadFuncionalId == unidadFuncionalId.Value)
+            .Include(r => r.Amenity)
+            .OrderDescending()
+            .ToListAsync();
 
         return View(reservas);
 
@@ -111,20 +117,53 @@ public class ReservasController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("AmenityId,FechaReserva,Observaciones,Turno")] Reserva reserva)
     {
+        int? ufId = HttpContext.Session.GetInt32("UnidadFuncionalId");
+
+        if (ufId == null)
+            return RedirectToAction("Login", "Auth");
+
+        var uf = await _context.UnidadesFuncionales
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == ufId.Value);
+
+        if (uf == null)
+            return RedirectToAction("Login", "Auth");
+
+        if (ModelState.IsValid && await TieneDeudaAsync(ufId.Value))
+        {
+            ModelState.AddModelError(
+                string.Empty,
+                "No puede realizar una reserva porque registra expensas pendientes de pago.");
+        }
+
+        if (ModelState.IsValid && await ExisteReservaEnMismoTurnoAsync(reserva, uf.ConsorcioId))
+        {
+            ModelState.AddModelError(
+                nameof(reserva.Turno),
+                "Ya existe una reserva para ese espacio, fecha y turno.");
+        }
+
         if (ModelState.IsValid)
         {
-            int? ufId = HttpContext.Session.GetInt32("UnidadFuncionalId");
-
-            if (ufId == null)
-                return RedirectToAction("Login", "Auth");
-
-            reserva.UnidadFuncionalId = (int)ufId;
+            reserva.UnidadFuncionalId = ufId.Value;
 
             _context.Add(reserva);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
 
         }
+
+        var amenities = await _context.Amenities
+            .Where(a => a.ConsorcioId == uf.ConsorcioId)
+            .OrderBy(a => a.Nombre)
+            .ToListAsync();
+
+        ViewBag.Amenities = new SelectList(
+            amenities,
+            "Id",
+            "Nombre",
+            reserva.AmenityId);
+
         return View(reserva);
     }
 
@@ -215,5 +254,121 @@ public class ReservasController : Controller
     private bool ReservaExists(int? id)
     {
         return _context.Reservas.Any(e => e.Id == id);
+    }
+
+    private Task<bool> ExisteReservaEnMismoTurnoAsync(Reserva reserva, int consorcioId)
+    {
+        return _context.Reservas.AnyAsync(r =>
+            r.AmenityId == reserva.AmenityId &&
+            r.Amenity.ConsorcioId == consorcioId &&
+            r.FechaReserva.Date == reserva.FechaReserva.Date &&
+            r.Turno == reserva.Turno &&
+            r.Estado != EstadoReserva.Cancelada);
+    }
+
+    private async Task<bool> TieneDeudaAsync(int unidadFuncionalId)
+    {
+        decimal totalExpensas = await _context.Expensas
+            .Where(e => e.UnidadFuncionalId == unidadFuncionalId && e.FechaVencimiento<DateTime.Today)
+            .SumAsync(e => (decimal?)e.MontoTotal) ?? 0;
+
+        decimal totalPagos = await _context.Pagos
+            .Where(p =>
+                p.Expensa.UnidadFuncionalId == unidadFuncionalId &&
+                p.Estado == EstadoPago.Aprobado)
+            .SumAsync(p => (decimal?)p.MontoPagado) ?? 0;
+
+        return totalPagos < totalExpensas;
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Aprobar(int id)
+    {
+        var rol = HttpContext.Session.GetString("UsuarioRol");
+
+        if (rol != "Administrador")
+            return RedirectToAction("Login", "Auth");
+
+        var reserva = await _context.Reservas
+            .FirstOrDefaultAsync(r => r.Id == id);
+
+        if (reserva == null)
+            return NotFound();
+
+        if (reserva.Estado == EstadoReserva.Cancelada)
+        {
+            TempData["Error"] = "No se puede aprobar una reserva cancelada.";
+            return RedirectToAction(nameof(IndexAdmin));
+        }
+
+        if (reserva.Estado == EstadoReserva.Confirmada)
+        {
+            TempData["Error"] = "La reserva ya se encuentra aprobada.";
+            return RedirectToAction(nameof(IndexAdmin));
+        }
+
+        reserva.Estado = EstadoReserva.Confirmada;
+
+        await _context.SaveChangesAsync();
+
+        TempData["Mensaje"] = "La reserva fue aprobada correctamente.";
+
+        return RedirectToAction(nameof(IndexAdmin));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Rechazar(int id)
+    {
+        var rol = HttpContext.Session.GetString("UsuarioRol");
+
+        if (rol != "Administrador")
+            return RedirectToAction("Login", "Auth");
+
+        var reserva = await _context.Reservas
+            .FirstOrDefaultAsync(r => r.Id == id);
+
+        if (reserva == null)
+            return NotFound();
+
+        if (reserva.Estado == EstadoReserva.Cancelada)
+        {
+            TempData["Error"] = "No se puede aprobar una reserva cancelada.";
+            return RedirectToAction(nameof(IndexAdmin));
+        }
+
+        reserva.Estado = EstadoReserva.Rechazada;
+
+        await _context.SaveChangesAsync();
+
+        TempData["Mensaje"] = "La reserva fue rechazada correctamente.";
+
+        return RedirectToAction(nameof(IndexAdmin));
+    }
+
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Cancelar(int id)
+    {
+        var rol = HttpContext.Session.GetString("UsuarioRol");
+
+        if (rol != "Propietario")
+            return RedirectToAction("Login", "Auth");
+
+        var reserva = await _context.Reservas
+            .FirstOrDefaultAsync(r => r.Id == id);
+
+        if (reserva == null)
+            return NotFound();
+
+        reserva.Estado = EstadoReserva.Cancelada;
+
+        await _context.SaveChangesAsync();
+
+        TempData["Mensaje"] = "La reserva fue cancelada correctamente.";
+
+        return RedirectToAction(nameof(IndexPropietario));
     }
 }

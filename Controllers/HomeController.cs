@@ -2,6 +2,7 @@ using GestionDeConsorcios_v2_MVC.Context;
 using GestionDeConsorcios_v2_MVC.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 
 namespace GestionDeConsorcios_v2_MVC.Controllers
 {
@@ -57,8 +58,31 @@ namespace GestionDeConsorcios_v2_MVC.Controllers
             return View();
         }
 
-        public IActionResult PropietarioHome()
+        public async Task<IActionResult> PropietarioHome()
         {
+            int? ufId = HttpContext.Session.GetInt32("UnidadFuncionalId");
+
+            if (ufId == null)
+                return RedirectToAction("Login", "Auth");
+
+            decimal totalExpensas = await _context.Expensas
+                .Where(e => e.UnidadFuncionalId == ufId.Value && e.FechaVencimiento<DateTime.Today)
+                .SumAsync(e => (decimal?)e.MontoTotal) ?? 0;
+
+            decimal totalPagos = await _context.Pagos
+                .Where(p =>
+                    p.Expensa.UnidadFuncionalId == ufId.Value &&
+                    p.Estado == EstadoPago.Aprobado)
+                .SumAsync(p => (decimal?)p.MontoPagado) ?? 0;
+
+            decimal saldo = totalExpensas - totalPagos;
+            bool tieneDeuda = saldo > 0;
+
+            ViewBag.TotalExpensas = totalExpensas;
+            ViewBag.TotalPagos = totalPagos;
+            ViewBag.Saldo = saldo;
+            ViewBag.TieneDeuda = tieneDeuda;
+
             return View();
         }
 

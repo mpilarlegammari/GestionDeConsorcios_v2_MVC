@@ -58,7 +58,19 @@
             @Html.DisplayNameFor(model => model.ArchivoFacturaPath)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ArchivoFacturaPath)
+            @if (!string.IsNullOrWhiteSpace(Model?.ArchivoFacturaPath))
+            {
+                <a href="@Url.Content(Model!.ArchivoFacturaPath!)"
+                   target="_blank"
+                   rel="noopener"
+                   class="btn btn-sm btn-outline-primary">
+                    Ver comprobante
+                </a>
+            }
+            else
+            {
+                <span class="text-muted">Sin comprobante</span>
+            }
         </dd>
     </dl>
         <dt class = "col-sm-2">

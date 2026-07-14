@@ -21,7 +21,7 @@
                 @Html.DisplayName("Amenitie")
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FechaReserva)
+                @Html.DisplayName("Fecha reserva")
             </th>
             <th>
                 @Html.DisplayName("Turno")
@@ -39,18 +39,44 @@
                     @item.Amenity.Nombre
                 </td>
             <td>
-                @Html.DisplayFor(model => item.FechaReserva)
+                    @item.FechaReserva.ToString("dd/MM/yyyy")
             </td>
                 <td>
                     @Html.DisplayFor(model => item.Turno)
                 </td>
             <td>
-                @Html.DisplayFor(model => item.Estado)
+                    @if (item.Estado == EstadoReserva.Pendiente)
+                    {
+                        <span class="badge bg-warning">Pendiente</span>
+                    }else if (item.Estado == EstadoReserva.Confirmada)
+                        {
+                            <span class="badge bg-success">Aprobada</span>
+                        }
+                        else if (item.Estado == EstadoReserva.Cancelada)
+                        {
+                            <span class="badge bg-secondary">Cancelada</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Rechazada</span>
+                        }
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    @if ((item.Estado == EstadoReserva.Pendiente || item.Estado == EstadoReserva.Confirmada) && item.FechaReserva > DateTime.Today)
+                    {
+                        <form asp-action="Cancelar"
+                        asp-route-id="@item.Id"
+                        method="post"
+                        class="d-inline">
+
+                            <button type="submit"
+                            class="btn btn-sm btn-warning"
+                            onclick="return confirm('¿Desea cancelar esta reserva?');">
+                                Cancelar
+                            </button>
+                        </form>                
+                    }
+                    <a asp-action="Details" asp-route-id="@item.Id">Detalles</a>
             </td>
         </tr>
 }

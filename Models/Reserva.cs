@@ -19,8 +19,9 @@ public enum EstadoReserva
 {
     Pendiente,
     Confirmada,
-    Cancelada
+    Cancelada,
+    Rechazada
 }
 
 public enum Turno { 
-Maniana,Tarde,Noche}
+Mañana,Tarde,Noche}
